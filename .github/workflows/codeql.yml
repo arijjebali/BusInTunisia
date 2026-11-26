@@ -1,0 +1,33 @@
+# Analyse statique de sécurité (SAST) du code JavaScript avec CodeQL.
+# Les alertes apparaissent dans l'onglet « Security → Code scanning » du dépôt.
+# Voir docs/devops/03-qualite-tests.md et docs/devops/06-securite.md.
+name: CodeQL (analyse statique de sécurité)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: "0 6 * * 1" # chaque lundi à 6 h UTC : nouvelles règles appliquées au code existant
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: CodeQL JavaScript
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # publication des alertes dans l'onglet Security
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+      - uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript"
