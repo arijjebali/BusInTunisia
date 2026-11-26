@@ -1,0 +1,35 @@
+# Dependabot : propose automatiquement (pull requests vers develop) les mises à jour de dépendances,
+# en priorité celles qui corrigent une vulnérabilité connue. Chaque PR passe par le pipeline complet.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /server
+    target-branch: develop
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 5
+    commit-message: { prefix: "build(deps)" }
+    groups:
+      outils-de-dev:
+        dependency-type: development
+
+  - package-ecosystem: npm
+    directory: /client
+    target-branch: develop
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 5
+    commit-message: { prefix: "build(deps)" }
+    groups:
+      outils-de-dev:
+        dependency-type: development
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule: { interval: weekly, day: monday }
+    commit-message: { prefix: "ci(deps)" }
+
+  - package-ecosystem: docker
+    directory: /
+    target-branch: develop
+    schedule: { interval: weekly, day: monday }
+    commit-message: { prefix: "build(deps)" }
