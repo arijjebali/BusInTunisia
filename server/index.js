@@ -43,6 +43,29 @@ try {
 const bookingService = new BookingService(createBookingRepository(pool));
 const busRepository = createBusRepository(pool);
 
+// Sonde de santé (health check) : utilisée par Docker (HEALTHCHECK), les smoke tests et la supervision.
+// 200 si l'application ET la base répondent, 503 sinon. Expose la version déployée (traçabilité).
+const startedAt = new Date();
+app.get('/api/health', async (req, res) => {
+  const health = {
+    status: 'ok',
+    version: process.env.APP_VERSION || 'dev',
+    commit: process.env.GIT_SHA || 'unknown',
+    environment: process.env.APP_ENV || 'development',
+    startedAt: startedAt.toISOString(),
+    uptimeSeconds: Math.round(process.uptime()),
+    checks: { database: 'up' },
+  };
+  try {
+    await pool.query('SELECT 1');
+  } catch (err) {
+    health.status = 'degraded';
+    health.checks.database = 'down';
+    health.error = err.code || 'DB_ERROR';
+  }
+  res.set('Cache-Control', 'no-store').status(health.status === 'ok' ? 200 : 503).json(health);
+});
+
 // Traduit les erreurs métier (statusCode) en réponse HTTP
 const sendServiceError = (res, error) => {
   if (error.statusCode) return res.status(error.statusCode).json({ message: error.message });
@@ -855,6 +878,19 @@ app.get('/api/operator/trips', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// En conteneur, le même serveur sert l'interface React construite (CLIENT_DIST) : une seule image à
+// versionner, déployer et restaurer. Les routes /api inconnues restent des 404 JSON.
+const CLIENT_DIST = process.env.CLIENT_DIST;
+if (CLIENT_DIST && require('fs').existsSync(CLIENT_DIST)) {
+  const path = require('path');
+  app.use(express.static(CLIENT_DIST, { index: false, maxAge: '1h' }));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(CLIENT_DIST, 'index.html')); // routage côté client (React Router)
+  });
+}
+app.use('/api', (req, res) => res.status(404).json({ message: 'Not found' }));
 
 // Démarre le serveur seulement si le fichier est lancé directement (node index.js) ;
 // importé par les tests (supertest), il expose l'application sans ouvrir de port.
