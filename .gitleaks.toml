@@ -1,0 +1,17 @@
+# Configuration Gitleaks (détection de secrets dans le code ET dans tout l'historique Git).
+# On part des règles par défaut ; les exceptions ci-dessous sont des faux positifs analysés et
+# justifiés dans docs/devops/06-securite.md. Toute nouvelle exception doit y être documentée.
+title = "BusInTunisia — détection de secrets"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Modèles sans valeur réelle et données de test fictives"
+paths = [
+  # Modèles de configuration : valeurs « changer-moi » ou vides
+  '''(^|/)\.env\.example$''',
+  '''deploy/test/secrets\.env\.example$''',
+  # Captures d'écran des preuves (images)
+  '''docs/devops/preuves/.*\.png$''',
+]

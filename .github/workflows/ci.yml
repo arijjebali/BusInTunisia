@@ -3,7 +3,8 @@
 #
 #               ┌──► build ─────────────┬──► e2e
 #   quality ────┤                       │
-#               └──► backend (tests) ───┴──► docker (image → ghcr.io)
+#               └──► backend (tests) ───┼──► docker (build → scan Trivy → ghcr.io)
+#   security ───────────────────────────┘
 #
 # Les noms des jobs « backend » et « e2e » sont exigés par la protection des branches main/develop :
 # ne pas les renommer sans mettre à jour les règles de protection.
@@ -80,6 +81,50 @@ jobs:
         if: always()
         with:
           name: rapports-qualite
+          path: reports/
+
+  # ---------------------------------------------------------------------------
+  # Sécurité (DevSecOps) : secrets dans tout l'historique Git + vulnérabilités des dépendances.
+  # Quality gates : un secret détecté, ou une vulnérabilité HAUTE/CRITIQUE dans une dépendance de
+  # PRODUCTION, fait échouer le job et bloque la publication de l'image. Voir docs/devops/06-securite.md.
+  # ---------------------------------------------------------------------------
+  security:
+    name: Sécurité (secrets et dépendances)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # historique complet : un secret supprimé d'un fichier reste dans les anciens commits
+
+      - name: Détection de secrets (Gitleaks, tout l'historique)
+        env:
+          GITLEAKS_VERSION: "v8.30.1"
+        run: |
+          mkdir -p reports
+          docker run --rm -v "${PWD}:/repo" "ghcr.io/gitleaks/gitleaks:${GITLEAKS_VERSION}" \
+            git /repo --config /repo/.gitleaks.toml --redact --verbose \
+            --report-format json --report-path /repo/reports/gitleaks.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Audit des dépendances (npm audit)
+        run: |
+          status=0
+          for dir in server client; do
+            echo "::group::npm audit — $dir (rapport complet, dev inclus)"
+            (cd "$dir" && npm audit --json > "../reports/npm-audit-$dir.json"; npm audit) || true
+            echo "::endgroup::"
+            echo "Gate $dir : dépendances de production, sévérité ≥ high"
+            (cd "$dir" && npm audit --omit=dev --audit-level=high) || status=1
+          done
+          exit $status
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapports-securite
           path: reports/
 
   # ---------------------------------------------------------------------------
@@ -274,9 +319,9 @@ jobs:
   # latest (main uniquement). Voir docs/devops/04-conteneurisation.md.
   # ---------------------------------------------------------------------------
   docker:
-    name: Image Docker (build et publication)
+    name: Image Docker (build, scan Trivy et publication)
     runs-on: ubuntu-latest
-    needs: [build, backend]
+    needs: [build, backend, security]
     permissions:
       contents: read
       packages: write # publication dans ghcr.io avec le jeton éphémère du pipeline
@@ -308,12 +353,12 @@ jobs:
             type=semver,pattern={{version}}
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Construire (et publier hors PR)
-        id: push
+      # 1) Construction chargée dans le démon Docker du runner, pour l'analyser AVANT toute publication.
+      - name: Construire l'image
         uses: docker/build-push-action@v7
         with:
           context: .
-          push: ${{ env.PUBLISH == 'true' }}
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
@@ -322,6 +367,47 @@ jobs:
           # Cache des couches Docker entre pipelines (stockage de cache GitHub Actions).
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # 2) Scan de vulnérabilités de l'image (paquets Alpine + paquets npm embarqués) avec Trivy.
+      #    Quality gate sécurité : une vulnérabilité CRITIQUE disposant d'un correctif bloque la publication.
+      #    Trivy tourne depuis son image officielle à version figée : aucune action tierce n'est exécutée.
+      - name: Scanner l'image (Trivy)
+        env:
+          TRIVY_VERSION: "0.76.2"
+        run: |
+          SCAN_TAG="${IMAGE}:sha-${GITHUB_SHA::7}"
+          mkdir -p reports "${HOME}/.cache/trivy"
+          trivy() {
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+              -v "${HOME}/.cache/trivy:/root/.cache/trivy" -v "${PWD}/reports:/reports" \
+              "aquasec/trivy:${TRIVY_VERSION}" "$@"
+          }
+          # Rapport complet (toutes sévérités) archivé en JSON
+          trivy image --quiet --format json --output /reports/trivy-image.json "$SCAN_TAG"
+          # Tableau HIGH + CRITICAL dans le journal et dans le rapport texte
+          trivy image --quiet --severity HIGH,CRITICAL "$SCAN_TAG" | tee reports/trivy-image.txt
+          # Quality gate
+          trivy image --quiet --exit-code 1 --ignore-unfixed --severity CRITICAL "$SCAN_TAG"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapport-trivy
+          path: reports/
+
+      # 3) Publication (hors PR) : les couches viennent du cache, rien n'est reconstruit.
+      - name: Publier dans ghcr.io
+        id: push
+        if: env.PUBLISH == 'true'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            APP_VERSION=${{ needs.build.outputs.version }}
+            GIT_SHA=${{ github.sha }}
+          cache-from: type=gha
 
       - name: Résumé de l'image
         run: |
