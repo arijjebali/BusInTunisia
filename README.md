@@ -59,9 +59,18 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-La CI (`.github/workflows/tests.yml`) exécute la même suite à chaque push et à chaque pull request.
+La CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) exécute la même suite à chaque push et à chaque pull request, avec le linting, les contrôles de sécurité, la construction de l'image Docker et le déploiement en test : voir le [dossier DevOps](docs/devops/README.md).
 
 ## Lancer l'application
+
+Avec Docker (application + base, environnement reproductible) :
+
+```bash
+cp .env.example .env            # puis remplacer les valeurs « changer-moi »
+docker compose up -d --build    # http://localhost:8000 — santé : /api/health
+```
+
+Sans Docker (MariaDB locale, `server/.env` copié depuis `server/.env.example`) :
 
 ```bash
 cd server && npm start          # API sur http://localhost:5000
