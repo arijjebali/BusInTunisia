@@ -1,0 +1,21 @@
+# Fins de ligne : LF dans le dépôt ET dans la copie de travail, quel que soit le système.
+# Raison : les scripts et images Docker tournent sous Linux, où un fichier CRLF casse
+# l'exécution (« /bin/sh^M: bad interpreter »). Cette règle s'impose à tout clone,
+# indépendamment du réglage core.autocrlf de chaque poste.
+* text=auto eol=lf
+
+# Scripts Windows : CRLF obligatoire pour cmd.exe / PowerShell
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Binaires : jamais convertis ni comparés ligne à ligne
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.docx binary
+*.pptx binary
+*.xlsx binary

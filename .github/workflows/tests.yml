@@ -1,0 +1,94 @@
+name: Tests BusInTunisia
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      perf:
+        description: "Exécuter aussi le test de performance"
+        type: boolean
+        default: false
+
+env:
+  DB_HOST: 127.0.0.1
+  DB_PORT: 3306
+  DB_USER: root
+  DB_PASSWORD: root
+  TEST_DB_NAME: bus_in_tunisia_test
+  JWT_SECRET: ci-only-secret-not-used-in-production
+
+jobs:
+  backend:
+    name: Unitaires, intégration, couverture et API (régression)
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - name: Tests unitaires + intégration avec seuils de couverture
+        run: npm run test:coverage
+      - name: Tests API Newman (suite de régression, hors défauts connus)
+        run: npm run test:api:regression
+      - name: Test de performance
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.perf }}
+        run: npm run test:perf
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rapports-backend
+          path: |
+            server/coverage/
+            server/tests/api/reports/
+            server/tests/perf/reports/
+
+  e2e:
+    name: Parcours d'interface (Playwright)
+    runs-on: ubuntu-latest
+    needs: backend
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+        working-directory: server
+      - run: npm ci
+        working-directory: client
+      - run: npx playwright install --with-deps chromium
+        working-directory: client
+      - run: npm run test:e2e
+        working-directory: client
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rapport-e2e
+          path: |
+            client/e2e-report/
+            client/test-results/

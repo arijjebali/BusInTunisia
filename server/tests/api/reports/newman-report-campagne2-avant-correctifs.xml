@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="BusInTunisia — Tests API (Semaines 8 à 10)" tests="36" time="1.767">
+  <testsuite name="1. Authentification / API-01 Login client valide" id="7144f9a8-0997-4274-9dfd-80beca1a7a00" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.299">
+    <testcase name="Code de statut = 200" time="0.299" classname="1AuthentificationApi01LoginClientValide"/>
+    <testcase name="Schéma : token (string) + user {id, email, name, role}" time="0.299" classname="1AuthentificationApi01LoginClientValide"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-02 Login mot de passe incorrect" id="f05f42d4-051b-4a8c-ac82-1bb6cf7414bf" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.232">
+    <testcase name="Code de statut = 401" time="0.232" classname="1AuthentificationApi02LoginMotDePasseIncorrect"/>
+    <testcase name="Message d'erreur explicite" time="0.232" classname="1AuthentificationApi02LoginMotDePasseIncorrect"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-03 Login sans mot de passe (données invalides)" id="aa80a28c-2977-49a6-9c60-920360971a4e" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.008">
+    <testcase name="Code de statut = 400" time="0.008" classname="1AuthentificationApi03LoginSansMotDePasseDonneesInvalides"/>
+    <testcase name="Message d'erreur explicite" time="0.008" classname="1AuthentificationApi03LoginSansMotDePasseDonneesInvalides"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-04 Login admin valide" id="30ab6817-1c82-44e2-a4d9-2983ead88d01" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.173">
+    <testcase name="Code de statut = 200" time="0.173" classname="1AuthentificationApi04LoginAdminValide"/>
+    <testcase name="Rôle admin" time="0.173" classname="1AuthentificationApi04LoginAdminValide"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-05 Login second client" id="c4936920-b81b-4465-a459-19affb6358fa" timestamp="2026-11-19T19:54:45.602Z" tests="1" failures="0" errors="0" time="0.262">
+    <testcase name="Code de statut = 200" time="0.262" classname="1AuthentificationApi05LoginSecondClient"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-06 Inscription avec e-mail déjà utilisé (conflit)" id="f92f8ce6-ce91-41b1-976e-54b7bf4f48d2" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 400" time="0.011" classname="1AuthentificationApi06InscriptionAvecEMailDejaUtiliseConflit"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="1AuthentificationApi06InscriptionAvecEMailDejaUtiliseConflit"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-07 Inscription sans nom (données invalides)" id="48060ffb-5048-404b-bc9e-a61d21fb42ce" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 400" time="0.011" classname="1AuthentificationApi07InscriptionSansNomDonneesInvalides"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="1AuthentificationApi07InscriptionSansNomDonneesInvalides"/>
+  </testsuite>
+  <testsuite name="2. Trajets / API-08 Rechercher Tunis → Sousse le 15/01/2030" id="53674dac-6be6-4ad6-a02f-9a98008a38bb" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="Code de statut = 200" time="0.015" classname="2TrajetsApi08RechercherTunisSousseLe15012030"/>
+    <testcase name="Schéma : trips[] avec champs attendus et types corrects" time="0.015" classname="2TrajetsApi08RechercherTunisSousseLe15012030"/>
+  </testsuite>
+  <testsuite name="2. Trajets / API-09 Détail d'un trajet et sièges réservés" id="6fd973b2-0f42-4e37-a470-44ee1f0ab041" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="Code de statut = 200" time="0.015" classname="2TrajetsApi09DetailDunTrajetEtSiegesReserves"/>
+    <testcase name="Schéma : trip + reservedSeats[] (sièges des réservations confirmées)" time="0.015" classname="2TrajetsApi09DetailDunTrajetEtSiegesReserves"/>
+  </testsuite>
+  <testsuite name="2. Trajets / API-10 Trajet inexistant" id="601b57af-9348-478c-950d-9f5d721a786d" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.009">
+    <testcase name="Code de statut = 404" time="0.009" classname="2TrajetsApi10TrajetInexistant"/>
+    <testcase name="Message d'erreur explicite" time="0.009" classname="2TrajetsApi10TrajetInexistant"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-11 Créer une réservation (siège 10)" id="e92f1d1f-4d86-419f-96aa-105efe1f09f2" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.026">
+    <testcase name="Code de statut = 200" time="0.026" classname="3ReservationsApi11CreerUneReservationSiege10"/>
+    <testcase name="Schéma : message + reservation_id (number)" time="0.026" classname="3ReservationsApi11CreerUneReservationSiege10"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-12 Réserver sans authentification" id="57ae418e-4b38-4f97-adc2-c1e837217bcd" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.008">
+    <testcase name="Code de statut = 401" time="0.008" classname="3ReservationsApi12ReserverSansAuthentification"/>
+    <testcase name="Message d'erreur explicite" time="0.008" classname="3ReservationsApi12ReserverSansAuthentification"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-13 Réserver avec un jeton invalide" id="d899c147-eb34-4db1-b479-9ab5dc932b5b" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.007">
+    <testcase name="Code de statut = 401" time="0.007" classname="3ReservationsApi13ReserverAvecUnJetonInvalide"/>
+    <testcase name="Message d'erreur explicite" time="0.007" classname="3ReservationsApi13ReserverAvecUnJetonInvalide"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-14 Réserver sans siège (données invalides)" id="6572a287-4d77-42ec-bed4-d2c1fafd83f7" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.009">
+    <testcase name="Code de statut = 400" time="0.009" classname="3ReservationsApi14ReserverSansSiegeDonneesInvalides"/>
+    <testcase name="Message d'erreur explicite" time="0.009" classname="3ReservationsApi14ReserverSansSiegeDonneesInvalides"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-15 Réserver un siège déjà réservé (conflit)" id="e3fa7a70-beae-4caa-841f-cf5b5364a15a" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.027">
+    <testcase name="Code de statut = 409" time="0.027" classname="3ReservationsApi15ReserverUnSiegeDejaReserveConflit">
+      <failure type="AssertionFailure" message="expected response to have status code 409 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 3. Réservations / API-15 Réserver un siège déjà réservé (conflit).]]>
+        <![CDATA[Test description: Code de statut = 409.]]>
+        <![CDATA[Error message: expected response to have status code 409 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 409 but got 200
+   at Object.eval sandbox-script.js:1:15).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.027" classname="3ReservationsApi15ReserverUnSiegeDejaReserveConflit">
+      <failure type="AssertionFailure" message="expected 'Booking successful' to match /already reserved/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 3. Réservations / API-15 Réserver un siège déjà réservé (conflit).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Booking successful' to match /already reserved/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Booking successful' to match /already reserved/i
+   at Object.eval sandbox-script.js:2:15).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="3. Réservations / API-16 Réserver sur un trajet inexistant" id="88d3306b-5237-4461-991a-3cb1bc7bb897" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="1" errors="0" time="0.012">
+    <testcase name="Code de statut = 404" time="0.012" classname="3ReservationsApi16ReserverSurUnTrajetInexistant">
+      <failure type="AssertionFailure" message="expected response to have status code 404 but got 500">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 3. Réservations / API-16 Réserver sur un trajet inexistant.]]>
+        <![CDATA[Test description: Code de statut = 404.]]>
+        <![CDATA[Error message: expected response to have status code 404 but got 500.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 404 but got 500
+   at Object.eval sandbox-script.js:1:16).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.012" classname="3ReservationsApi16ReserverSurUnTrajetInexistant"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-17 Lister mes réservations" id="10186e51-9ca3-4f45-8eab-5da2eab1c151" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.050">
+    <testcase name="Code de statut = 200" time="0.050" classname="3ReservationsApi17ListerMesReservations"/>
+    <testcase name="Schéma : bookings[] contenant la nouvelle réservation" time="0.050" classname="3ReservationsApi17ListerMesReservations"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-18 Billet d'un autre passager (accès refusé)" id="5d710feb-4ad6-49ab-a68d-9666dd86539b" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.013">
+    <testcase name="Code de statut = 404" time="0.013" classname="3ReservationsApi18BilletDunAutrePassagerAccesRefuse"/>
+    <testcase name="Message d'erreur explicite" time="0.013" classname="3ReservationsApi18BilletDunAutrePassagerAccesRefuse"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-19 Annuler ma réservation (confirmed → cancelled)" id="9f78bdc4-a2ae-49cc-aea7-53806d7f8750" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.024">
+    <testcase name="Code de statut = 200" time="0.024" classname="3ReservationsApi19AnnulerMaReservationConfirmedCancelled"/>
+    <testcase name="Message" time="0.024" classname="3ReservationsApi19AnnulerMaReservationConfirmedCancelled"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-20 Annuler une 2e fois (cancelled → cancelled interdit)" id="4161fd8d-2fad-4b43-880d-705fb85a786b" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.011">
+    <testcase name="Code de statut = 409" time="0.011" classname="3ReservationsApi20AnnulerUne2EFoisCancelledCancelledInterdit">
+      <failure type="AssertionFailure" message="expected response to have status code 409 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 3. Réservations / API-20 Annuler une 2e fois (cancelled → cancelled interdit).]]>
+        <![CDATA[Test description: Code de statut = 409.]]>
+        <![CDATA[Error message: expected response to have status code 409 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 409 but got 200
+   at Object.eval sandbox-script.js:1:20).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="3ReservationsApi20AnnulerUne2EFoisCancelledCancelledInterdit">
+      <failure type="AssertionFailure" message="expected 'Cancelled' to match /transition/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 3. Réservations / API-20 Annuler une 2e fois (cancelled → cancelled interdit).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Cancelled' to match /transition/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Cancelled' to match /transition/i
+   at Object.eval sandbox-script.js:2:20).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="3. Réservations / API-21 Annuler un voyage passé (completed → cancelled interdit)" id="aa387e5d-335f-440a-94d8-303f44acf4bc" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.013">
+    <testcase name="Code de statut = 409" time="0.013" classname="3ReservationsApi21AnnulerUnVoyagePasseCompletedCancelledInterdit">
+      <failure type="AssertionFailure" message="expected response to have status code 409 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 3. Réservations / API-21 Annuler un voyage passé (completed → cancelled interdit).]]>
+        <![CDATA[Test description: Code de statut = 409.]]>
+        <![CDATA[Error message: expected response to have status code 409 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 409 but got 200
+   at Object.eval sandbox-script.js:1:21).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.013" classname="3ReservationsApi21AnnulerUnVoyagePasseCompletedCancelledInterdit">
+      <failure type="AssertionFailure" message="expected 'Cancelled' to match /transition/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 3. Réservations / API-21 Annuler un voyage passé (completed → cancelled interdit).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Cancelled' to match /transition/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Cancelled' to match /transition/i
+   at Object.eval sandbox-script.js:2:21).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="4. Administration / API-22 Statistiques admin" id="90e42b6c-8c79-4e80-a518-9f8772dbb3d8" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.024">
+    <testcase name="Code de statut = 200" time="0.024" classname="4AdministrationApi22StatistiquesAdmin"/>
+    <testcase name="Schéma : users, bookings, revenue numériques" time="0.024" classname="4AdministrationApi22StatistiquesAdmin"/>
+  </testsuite>
+  <testsuite name="4. Administration / API-23 Statistiques admin avec un compte client (droits insuffisants)" id="efa6d1df-4fc9-4646-a298-ff461a137ffd" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 403" time="0.011" classname="4AdministrationApi23StatistiquesAdminAvecUnCompteClientDroitsInsuffisants"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="4AdministrationApi23StatistiquesAdminAvecUnCompteClientDroitsInsuffisants"/>
+  </testsuite>
+  <testsuite name="4. Administration / API-24 Confirmer une réservation en attente (pending → confirmed)" id="0e357dad-017d-4198-a41f-981e2616ca89" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.025">
+    <testcase name="Code de statut = 200" time="0.025" classname="4AdministrationApi24ConfirmerUneReservationEnAttentePendingConfirmed"/>
+    <testcase name="Message" time="0.025" classname="4AdministrationApi24ConfirmerUneReservationEnAttentePendingConfirmed"/>
+  </testsuite>
+  <testsuite name="4. Administration / API-25 Confirmer une réservation annulée (cancelled → confirmed interdit)" id="4505f109-8354-4747-bb3a-5cfda7a8ea21" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.016">
+    <testcase name="Code de statut = 409" time="0.016" classname="4AdministrationApi25ConfirmerUneReservationAnnuleeCancelledConfirmedInterdit">
+      <failure type="AssertionFailure" message="expected response to have status code 409 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 4. Administration / API-25 Confirmer une réservation annulée (cancelled → confirmed interdit).]]>
+        <![CDATA[Test description: Code de statut = 409.]]>
+        <![CDATA[Error message: expected response to have status code 409 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 409 but got 200
+   at Object.eval sandbox-script.js:1:25).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.016" classname="4AdministrationApi25ConfirmerUneReservationAnnuleeCancelledConfirmedInterdit">
+      <failure type="AssertionFailure" message="expected 'Booking confirmed' to match /transition/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 4. Administration / API-25 Confirmer une réservation annulée (cancelled → confirmed interdit).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Booking confirmed' to match /transition/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Booking confirmed' to match /transition/i
+   at Object.eval sandbox-script.js:2:25).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-26 Créer un trajet sans prix (données invalides)" id="b9e6b11b-4a7c-4e18-b1b8-d18561022df5" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.019">
+    <testcase name="Code de statut = 400" time="0.019" classname="5ComplementsCampagneFinaleApi26CreerUnTrajetSansPrixDonneesInvalides">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 500">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-26 Créer un trajet sans prix (données invalides).]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 500.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 500
+   at Object.eval sandbox-script.js:1:26).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.019" classname="5ComplementsCampagneFinaleApi26CreerUnTrajetSansPrixDonneesInvalides">
+      <failure type="AssertionFailure" message="expected 'Server error' to match /price/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-26 Créer un trajet sans prix (données invalides).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Server error' to match /price/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Server error' to match /price/i
+   at Object.eval sandbox-script.js:2:26).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-27 Créer un trajet qui englobe un trajet existant du même bus (chevauchement)" id="aed77c8a-ee00-4712-99ed-2f1c544c158d" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.028">
+    <testcase name="Code de statut = 400" time="0.028" classname="5ComplementsCampagneFinaleApi27CreerUnTrajetQuiEnglobeUnTrajetExistantDuMemeBusChevauchement">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-27 Créer un trajet qui englobe un trajet existant du même bus (chevauchement).]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 200
+   at Object.eval sandbox-script.js:1:27).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.028" classname="5ComplementsCampagneFinaleApi27CreerUnTrajetQuiEnglobeUnTrajetExistantDuMemeBusChevauchement">
+      <failure type="AssertionFailure" message="expected 'Trip created' to match /already scheduled/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-27 Créer un trajet qui englobe un trajet existant du même bus (chevauchement).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Trip created' to match /already scheduled/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Trip created' to match /already scheduled/i
+   at Object.eval sandbox-script.js:2:27).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-28 Créer un trajet valide (bus libre)" id="64df83db-8796-472e-a8ee-3d778dfaddc3" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.016">
+    <testcase name="Code de statut = 200" time="0.016" classname="5ComplementsCampagneFinaleApi28CreerUnTrajetValideBusLibre"/>
+    <testcase name="Message de succès" time="0.016" classname="5ComplementsCampagneFinaleApi28CreerUnTrajetValideBusLibre"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-29 Annuler la réservation d'un autre passager (accès refusé)" id="a9bbfe9c-f419-47c5-be5d-8b353c228a2a" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.011">
+    <testcase name="Code de statut = 404" time="0.011" classname="5ComplementsCampagneFinaleApi29AnnulerLaReservationDunAutrePassagerAccesRefuse">
+      <failure type="AssertionFailure" message="expected response to have status code 404 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-29 Annuler la réservation d'un autre passager (accès refusé).]]>
+        <![CDATA[Test description: Code de statut = 404.]]>
+        <![CDATA[Error message: expected response to have status code 404 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 404 but got 200
+   at Object.eval sandbox-script.js:1:29).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="5ComplementsCampagneFinaleApi29AnnulerLaReservationDunAutrePassagerAccesRefuse">
+      <failure type="AssertionFailure" message="expected 'Cancelled' to match /not found/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-29 Annuler la réservation d'un autre passager (accès refusé).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Cancelled' to match /not found/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Cancelled' to match /not found/i
+   at Object.eval sandbox-script.js:2:29).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-30 Réserver 10 sièges (valeur limite max + 1)" id="b7239115-a83e-4516-9c68-fd1edb52f6a9" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.032">
+    <testcase name="Code de statut = 400" time="0.032" classname="5ComplementsCampagneFinaleApi30Reserver10SiegesValeurLimiteMax1">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-30 Réserver 10 sièges (valeur limite max + 1).]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 200
+   at Object.eval sandbox-script.js:1:30).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.032" classname="5ComplementsCampagneFinaleApi30Reserver10SiegesValeurLimiteMax1">
+      <failure type="AssertionFailure" message="expected 'Booking successful' to match /au plus 9/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-30 Réserver 10 sièges (valeur limite max + 1).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Booking successful' to match /au plus 9/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Booking successful' to match /au plus 9/i
+   at Object.eval sandbox-script.js:2:30).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-31 Réserver 9 sièges (valeur limite max)" id="c1704db0-db67-4ac7-8182-404010cb24fc" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="0" errors="0" time="0.019">
+    <testcase name="Code de statut = 200" time="0.019" classname="5ComplementsCampagneFinaleApi31Reserver9SiegesValeurLimiteMax"/>
+    <testcase name="Montant = 9 × 15 TND" time="0.019" classname="5ComplementsCampagneFinaleApi31Reserver9SiegesValeurLimiteMax"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-32 Connexion avec le compte démo admin publié sur la page de login (sécurité)" id="939493ca-0b3c-4dde-9dd1-5277e84dfdc4" timestamp="2026-11-19T19:54:45.602Z" tests="1" failures="1" errors="0" time="0.009">
+    <testcase name="Code de statut = 401" time="0.009" classname="5ComplementsCampagneFinaleApi32ConnexionAvecLeCompteDemoAdminPublieSurLaPageDeLoginSecurite">
+      <failure type="AssertionFailure" message="expected response to have status code 401 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-32 Connexion avec le compte démo admin publié sur la page de login (sécurité).]]>
+        <![CDATA[Test description: Code de statut = 401.]]>
+        <![CDATA[Error message: expected response to have status code 401 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 401 but got 200
+   at Object.eval sandbox-script.js:1:32).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-33 Avis avec une note hors bornes (6/5)" id="467fa3df-4a9f-4e9a-ab38-c340c9626b1c" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.016">
+    <testcase name="Code de statut = 400" time="0.016" classname="5ComplementsCampagneFinaleApi33AvisAvecUneNoteHorsBornes65">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-33 Avis avec une note hors bornes (6/5).]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 200
+   at Object.eval sandbox-script.js:1:33).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.016" classname="5ComplementsCampagneFinaleApi33AvisAvecUneNoteHorsBornes65">
+      <failure type="AssertionFailure" message="expected 'Review saved' to match /rating/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-33 Avis avec une note hors bornes (6/5).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Review saved' to match /rating/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Review saved' to match /rating/i
+   at Object.eval sandbox-script.js:2:33).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-34 Rejeter une réservation déjà confirmée (confirmed → cancelled par admin interdit)" id="3b9cb8b1-dc8b-4c08-8c42-b3753df99627" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.018">
+    <testcase name="Code de statut = 409" time="0.018" classname="5ComplementsCampagneFinaleApi34RejeterUneReservationDejaConfirmeeConfirmedCancelledParAdminInterdit">
+      <failure type="AssertionFailure" message="expected response to have status code 409 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-34 Rejeter une réservation déjà confirmée (confirmed → cancelled par admin interdit).]]>
+        <![CDATA[Test description: Code de statut = 409.]]>
+        <![CDATA[Error message: expected response to have status code 409 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 409 but got 200
+   at Object.eval sandbox-script.js:1:34).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.018" classname="5ComplementsCampagneFinaleApi34RejeterUneReservationDejaConfirmeeConfirmedCancelledParAdminInterdit">
+      <failure type="AssertionFailure" message="expected 'Booking rejected' to match /transition/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 5. Compléments campagne finale / API-34 Rejeter une réservation déjà confirmée (confirmed → cancelled par admin interdit).]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Booking rejected' to match /transition/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Booking rejected' to match /transition/i
+   at Object.eval sandbox-script.js:2:34).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09]" id="201c5b37-ada5-470e-8766-d94de0a95c10" timestamp="2026-11-19T19:54:45.602Z" tests="2" failures="2" errors="0" time="0.015">
+    <testcase name="Code de statut = 400" time="0.015" classname="9DefautsConnusOuvertsExclusDeLaRegressionApi90ReserverSurLeTrajet3Bus2UnSiegeQuiAppartientAuBus1Ano09">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09].]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 200
+   at Object.eval sandbox-script.js:1:35).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.015" classname="9DefautsConnusOuvertsExclusDeLaRegressionApi90ReserverSurLeTrajet3Bus2UnSiegeQuiAppartientAuBus1Ano09">
+      <failure type="AssertionFailure" message="expected 'Booking successful' to match /does not belong/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09].]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Booking successful' to match /does not belong/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Booking successful' to match /does not belong/i
+   at Object.eval sandbox-script.js:2:35).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="9. Défauts connus (ouverts — exclus de la régression) / API-91 Inscription avec un e-mail invalide et un mot de passe de 1 caractère [ANO-10]" id="9d2a8892-a66c-4c82-8282-ace681b80e53" timestamp="2026-11-19T19:54:45.602Z" tests="1" failures="1" errors="0" time="0.273">
+    <testcase name="Code de statut = 400" time="0.273" classname="9DefautsConnusOuvertsExclusDeLaRegressionApi91InscriptionAvecUnEMailInvalideEtUnMotDePasseDe1CaractereAno10">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: cd4fe85e-1b43-48e1-ae80-76fd93481c6c.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 9. Défauts connus (ouverts — exclus de la régression) / API-91 Inscription avec un e-mail invalide et un mot de passe de 1 caractère [ANO-10].]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 200
+   at Object.eval sandbox-script.js:1:36).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>

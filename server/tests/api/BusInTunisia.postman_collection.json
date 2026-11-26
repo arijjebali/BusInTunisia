@@ -1,0 +1,1772 @@
+{
+  "info": {
+    "name": "BusInTunisia — Tests API (Semaines 8 à 10)",
+    "description": "Collection de tests de l'API REST BusInTunisia : scénarios nominaux, négatifs, valeurs limites, droits et transitions d'état. Exécuter via `npm run test:api` (réinitialise la base bus_in_tunisia_test puis démarre le serveur sur le port 5055). Le dossier 9 regroupe les tests des anomalies encore ouvertes ; il est exclu de la suite de régression.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5055/api"
+    },
+    {
+      "key": "clientToken",
+      "value": ""
+    },
+    {
+      "key": "client2Token",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "newBookingId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentification",
+      "item": [
+        {
+          "name": "API-01 Login client valide",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Schéma : token (string) + user {id, email, name, role}\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.token).to.be.a(\"string\").and.not.empty;",
+                  "  pm.expect(j.user).to.include.all.keys(\"id\", \"email\", \"name\", \"role\");",
+                  "  pm.expect(j.user.id).to.be.a(\"number\");",
+                  "  pm.expect(j.user.role).to.eql(\"user\");",
+                  "  pm.expect(j.user).to.not.have.property(\"password\");",
+                  "});",
+                  "pm.collectionVariables.set(\"clientToken\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client.test@bus.tn\",\n  \"password\": \"Client123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-02 Login mot de passe incorrect",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/invalid credentials/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client.test@bus.tn\",\n  \"password\": \"mauvais\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-03 Login sans mot de passe (données invalides)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/required/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client.test@bus.tn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-04 Login admin valide",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Rôle admin\", () => pm.expect(pm.response.json().user.role).to.eql(\"admin\"));",
+                  "pm.collectionVariables.set(\"adminToken\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin.test@bus.tn\",\n  \"password\": \"Admin123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-05 Login second client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"client2Token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client2.test@bus.tn\",\n  \"password\": \"Client123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-06 Inscription avec e-mail déjà utilisé (conflit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/already exists/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Doublon Test\",\n  \"email\": \"client.test@bus.tn\",\n  \"password\": \"Secret123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-07 Inscription sans nom (données invalides)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/required/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sans.nom@bus.tn\",\n  \"password\": \"Secret123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Trajets",
+      "item": [
+        {
+          "name": "API-08 Rechercher Tunis → Sousse le 15/01/2030",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Schéma : trips[] avec champs attendus et types corrects\", () => {",
+                  "  const { trips } = pm.response.json();",
+                  "  pm.expect(trips).to.be.an(\"array\").with.lengthOf(1);",
+                  "  const t = trips[0];",
+                  "  pm.expect(t).to.include.all.keys(\"id\", \"price\", \"departure_time\", \"arrival_time\", \"date\", \"bus_type\", \"bus_capacity\", \"departure\", \"destination\");",
+                  "  pm.expect(t.price).to.be.a(\"number\");",
+                  "  pm.expect(t.departure_time).to.match(/^\\d{2}:\\d{2}$/);",
+                  "  pm.expect(t.departure).to.eql(\"Tunis\");",
+                  "  pm.expect(t.destination).to.eql(\"Sousse\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/trips/search?departure=Tunis&destination=Sousse&date=2030-01-15",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "departure",
+                  "value": "Tunis"
+                },
+                {
+                  "key": "destination",
+                  "value": "Sousse"
+                },
+                {
+                  "key": "date",
+                  "value": "2030-01-15"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-09 Détail d'un trajet et sièges réservés",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Schéma : trip + reservedSeats[] (sièges des réservations confirmées)\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.trip.id).to.eql(1);",
+                  "  pm.expect(j.reservedSeats).to.be.an(\"array\");",
+                  "  pm.expect(j.reservedSeats).to.include.members([1, 2, 5]);",
+                  "  pm.expect(j.reservedSeats).to.not.include(4); // réservation annulée",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/trips/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-10 Trajet inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/not found/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/trips/99999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "99999"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Réservations",
+      "item": [
+        {
+          "name": "API-11 Créer une réservation (siège 10)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Schéma : message + reservation_id (number)\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.message).to.match(/successful/i);",
+                  "  pm.expect(j.reservation_id).to.be.a(\"number\");",
+                  "});",
+                  "pm.collectionVariables.set(\"newBookingId\", pm.response.json().reservation_id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seats\": [\n    10\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-12 Réserver sans authentification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/token/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seats\": [\n    11\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-13 Réserver avec un jeton invalide",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/invalid token/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer jeton.invalide.xyz"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seats\": [\n    11\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-14 Réserver sans siège (données invalides)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/required/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seats\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-15 Réserver un siège déjà réservé (conflit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/already reserved/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client2Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seats\": [\n    10\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-16 Réserver sur un trajet inexistant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/not found/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 99999,\n  \"seats\": [\n    12\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-17 Lister mes réservations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Schéma : bookings[] contenant la nouvelle réservation\", () => {",
+                  "  const { bookings } = pm.response.json();",
+                  "  pm.expect(bookings).to.be.an(\"array\");",
+                  "  const b = bookings.find(x => x.id === Number(pm.collectionVariables.get(\"newBookingId\")));",
+                  "  pm.expect(b, \"réservation créée\").to.exist;",
+                  "  pm.expect(b).to.include.all.keys(\"id\", \"status\", \"date\", \"departure\", \"destination\", \"seats\");",
+                  "  pm.expect(b.status).to.eql(\"confirmed\");",
+                  "  pm.expect(b.seats).to.eql([10]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                "my"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-18 Billet d'un autre passager (accès refusé)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/not found/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client2Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tickets/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tickets",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-19 Annuler ma réservation (confirmed → cancelled)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Message\", () => pm.expect(pm.response.json().message).to.match(/cancel/i));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{newBookingId}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                "{{newBookingId}}",
+                "cancel"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-20 Annuler une 2e fois (cancelled → cancelled interdit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/transition/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{newBookingId}}/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                "{{newBookingId}}",
+                "cancel"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-21 Annuler un voyage passé (completed → cancelled interdit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/transition/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/4/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                "4",
+                "cancel"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Administration",
+      "item": [
+        {
+          "name": "API-22 Statistiques admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Schéma : users, bookings, revenue numériques\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.include.all.keys(\"users\", \"bookings\", \"revenue\");",
+                  "  [\"users\", \"bookings\", \"revenue\"].forEach(k => pm.expect(Number(j[k]), k).to.be.a(\"number\").and.not.NaN);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-23 Statistiques admin avec un compte client (droits insuffisants)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/admin/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "stats"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-24 Confirmer une réservation en attente (pending → confirmed)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Message\", () => pm.expect(pm.response.json().message).to.match(/confirmed/i));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/bookings/2/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "bookings",
+                "2",
+                "confirm"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-25 Confirmer une réservation annulée (cancelled → confirmed interdit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/transition/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/bookings/3/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "bookings",
+                "3",
+                "confirm"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Compléments campagne finale",
+      "item": [
+        {
+          "name": "API-26 Créer un trajet sans prix (données invalides)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/price/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/trips",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "trips"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route_id\": 1,\n  \"bus_id\": 3,\n  \"departure_time\": \"2030-03-01 08:00:00\",\n  \"arrival_time\": \"2030-03-01 10:30:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-27 Créer un trajet qui englobe un trajet existant du même bus (chevauchement)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/already scheduled/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/trips",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "trips"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route_id\": 1,\n  \"bus_id\": 1,\n  \"departure_time\": \"2030-01-15 07:00:00\",\n  \"arrival_time\": \"2030-01-15 12:00:00\",\n  \"price\": 15\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-28 Créer un trajet valide (bus libre)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Message de succès\", () => pm.expect(pm.response.json().message).to.eql(\"Trip created\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/trips",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "trips"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"route_id\": 1,\n  \"bus_id\": 3,\n  \"departure_time\": \"2030-03-01 08:00:00\",\n  \"arrival_time\": \"2030-03-01 10:30:00\",\n  \"price\": 15\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-29 Annuler la réservation d'un autre passager (accès refusé)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/not found/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{client2Token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/1/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                "1",
+                "cancel"
+              ]
+            }
+          }
+        },
+        {
+          "name": "API-30 Réserver 10 sièges (valeur limite max + 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/au plus 9/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seats\": [\n    20,\n    21,\n    22,\n    23,\n    24,\n    25,\n    26,\n    27,\n    28,\n    29\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-31 Réserver 9 sièges (valeur limite max)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Montant = 9 × 15 TND\", () => pm.expect(pm.response.json()).to.have.property(\"reservation_id\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 1,\n  \"seats\": [\n    30,\n    31,\n    32,\n    33,\n    34,\n    35,\n    36,\n    37,\n    38\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-32 Connexion avec le compte démo admin publié sur la page de login (sécurité)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@bus.tn\",\n  \"password\": \"admin123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-33 Avis avec une note hors bornes (6/5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/rating/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reviews"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 2,\n  \"rating\": 6,\n  \"comment\": \"Test valeur limite\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-34 Rejeter une réservation déjà confirmée (confirmed → cancelled par admin interdit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 409\", () => pm.response.to.have.status(409));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/transition/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/bookings/5/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "bookings",
+                "5",
+                "reject"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Défauts connus (ouverts — exclus de la régression)",
+      "item": [
+        {
+          "name": "API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Message d'erreur explicite\", () => { const j = pm.response.json(); pm.expect(j).to.have.property(\"message\"); pm.expect(j.message).to.match(/does not belong/i); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{clientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trip_id\": 3,\n  \"seats\": [\n    5\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "API-91 Inscription avec un e-mail invalide et un mot de passe de 1 caractère [ANO-10]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Code de statut = 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Invalide\",\n  \"email\": \"pas-un-email\",\n  \"password\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

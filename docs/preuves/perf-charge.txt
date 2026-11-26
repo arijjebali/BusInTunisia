@@ -1,0 +1,15 @@
+
+> server@1.0.0 test:perf
+> node tests/perf/loadTest.js
+
+PERF-01 Recherche de trajets (public) … 702 req/s, p97,5 = 40 ms, p99 = 45 ms, erreurs = 0, non-2xx = 0 => CONFORME
+PERF-02 Détail trajet + sièges occupés (public) … 595 req/s, p97,5 = 48 ms, p99 = 51 ms, erreurs = 0, non-2xx = 0 => CONFORME
+PERF-03 Mes réservations (authentifié) … 142 req/s, p97,5 = 209 ms, p99 = 232 ms, erreurs = 0, non-2xx = 0 => CONFORME
+┌─────────┬───────────┬───────────────────────────────────────────┬──────────┬─────────┬────────┬────────┬──────────┬────────┬────────┬────────┬────────┬────────────┐
+│ (index) │ id        │ scenario                                  │ requests │ rps_avg │ p50_ms │ p90_ms │ p97_5_ms │ p99_ms │ max_ms │ errors │ non2xx │ verdict    │
+├─────────┼───────────┼───────────────────────────────────────────┼──────────┼─────────┼────────┼────────┼──────────┼────────┼────────┼────────┼────────┼────────────┤
+│ 0       │ 'PERF-01' │ 'Recherche de trajets (public)'           │ 14044    │ 702     │ 28     │ 35     │ 40       │ 45     │ 71     │ 0      │ 0      │ 'CONFORME' │
+│ 1       │ 'PERF-02' │ 'Détail trajet + sièges occupés (public)' │ 11892    │ 595     │ 33     │ 43     │ 48       │ 51     │ 64     │ 0      │ 0      │ 'CONFORME' │
+│ 2       │ 'PERF-03' │ 'Mes réservations (authentifié)'          │ 2844     │ 142     │ 137    │ 160    │ 209      │ 232    │ 272    │ 0      │ 0      │ 'CONFORME' │
+└─────────┴───────────┴───────────────────────────────────────────┴──────────┴─────────┴────────┴────────┴──────────┴────────┴────────┴────────┴────────┴────────────┘
+Rapport : tests\perf\reports\perf-2026-11-19.json

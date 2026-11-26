@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-19T20:27:57.341Z",
+  "environment": {
+    "node": "v22.16.0",
+    "platform": "win32 x64",
+    "cpus": 8,
+    "database": "bus_in_tunisia_test"
+  },
+  "parameters": {
+    "connections": 20,
+    "duration_s": 20,
+    "thresholds_ms": {
+      "p97_5": 500,
+      "p99": 1000
+    }
+  },
+  "results": [
+    {
+      "id": "PERF-01",
+      "scenario": "Recherche de trajets (public)",
+      "requests": 14044,
+      "rps_avg": 702,
+      "p50_ms": 28,
+      "p90_ms": 35,
+      "p97_5_ms": 40,
+      "p99_ms": 45,
+      "max_ms": 71,
+      "errors": 0,
+      "non2xx": 0,
+      "verdict": "CONFORME"
+    },
+    {
+      "id": "PERF-02",
+      "scenario": "Détail trajet + sièges occupés (public)",
+      "requests": 11892,
+      "rps_avg": 595,
+      "p50_ms": 33,
+      "p90_ms": 43,
+      "p97_5_ms": 48,
+      "p99_ms": 51,
+      "max_ms": 64,
+      "errors": 0,
+      "non2xx": 0,
+      "verdict": "CONFORME"
+    },
+    {
+      "id": "PERF-03",
+      "scenario": "Mes réservations (authentifié)",
+      "requests": 2844,
+      "rps_avg": 142,
+      "p50_ms": 137,
+      "p90_ms": 160,
+      "p97_5_ms": 209,
+      "p99_ms": 232,
+      "max_ms": 272,
+      "errors": 0,
+      "non2xx": 0,
+      "verdict": "CONFORME"
+    }
+  ]
+}

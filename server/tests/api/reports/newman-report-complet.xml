@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="BusInTunisia — Tests API (Semaines 8 à 10)" tests="36" time="1.547">
+  <testsuite name="1. Authentification / API-01 Login client valide" id="2f2ba6c7-b276-4d97-9198-15b90d4c4801" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.278">
+    <testcase name="Code de statut = 200" time="0.278" classname="1AuthentificationApi01LoginClientValide"/>
+    <testcase name="Schéma : token (string) + user {id, email, name, role}" time="0.278" classname="1AuthentificationApi01LoginClientValide"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-02 Login mot de passe incorrect" id="aa8d133d-3bea-41db-9392-8da3154f68b9" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.188">
+    <testcase name="Code de statut = 401" time="0.188" classname="1AuthentificationApi02LoginMotDePasseIncorrect"/>
+    <testcase name="Message d'erreur explicite" time="0.188" classname="1AuthentificationApi02LoginMotDePasseIncorrect"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-03 Login sans mot de passe (données invalides)" id="36efd51a-65a9-4a52-83f3-45b755830a80" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.006">
+    <testcase name="Code de statut = 400" time="0.006" classname="1AuthentificationApi03LoginSansMotDePasseDonneesInvalides"/>
+    <testcase name="Message d'erreur explicite" time="0.006" classname="1AuthentificationApi03LoginSansMotDePasseDonneesInvalides"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-04 Login admin valide" id="076ad360-6a56-4731-88c3-fec8898dd349" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.126">
+    <testcase name="Code de statut = 200" time="0.126" classname="1AuthentificationApi04LoginAdminValide"/>
+    <testcase name="Rôle admin" time="0.126" classname="1AuthentificationApi04LoginAdminValide"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-05 Login second client" id="6b09b8bb-5c58-4420-8147-74f907386b75" timestamp="2026-11-19T20:25:57.862Z" tests="1" failures="0" errors="0" time="0.157">
+    <testcase name="Code de statut = 200" time="0.157" classname="1AuthentificationApi05LoginSecondClient"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-06 Inscription avec e-mail déjà utilisé (conflit)" id="50fe6070-b33a-40d0-b087-d934d8bcaa8e" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 400" time="0.011" classname="1AuthentificationApi06InscriptionAvecEMailDejaUtiliseConflit"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="1AuthentificationApi06InscriptionAvecEMailDejaUtiliseConflit"/>
+  </testsuite>
+  <testsuite name="1. Authentification / API-07 Inscription sans nom (données invalides)" id="65032bc0-4635-4afc-b517-8bafa9dd0e6c" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 400" time="0.011" classname="1AuthentificationApi07InscriptionSansNomDonneesInvalides"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="1AuthentificationApi07InscriptionSansNomDonneesInvalides"/>
+  </testsuite>
+  <testsuite name="2. Trajets / API-08 Rechercher Tunis → Sousse le 15/01/2030" id="1337c217-e69f-4417-bd66-038972ccb7eb" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.018">
+    <testcase name="Code de statut = 200" time="0.018" classname="2TrajetsApi08RechercherTunisSousseLe15012030"/>
+    <testcase name="Schéma : trips[] avec champs attendus et types corrects" time="0.018" classname="2TrajetsApi08RechercherTunisSousseLe15012030"/>
+  </testsuite>
+  <testsuite name="2. Trajets / API-09 Détail d'un trajet et sièges réservés" id="3bf167c7-ab65-4cc4-a694-55bbf12ebac7" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="Code de statut = 200" time="0.015" classname="2TrajetsApi09DetailDunTrajetEtSiegesReserves"/>
+    <testcase name="Schéma : trip + reservedSeats[] (sièges des réservations confirmées)" time="0.015" classname="2TrajetsApi09DetailDunTrajetEtSiegesReserves"/>
+  </testsuite>
+  <testsuite name="2. Trajets / API-10 Trajet inexistant" id="5499c005-f809-471a-831d-4e8d379b1680" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.010">
+    <testcase name="Code de statut = 404" time="0.010" classname="2TrajetsApi10TrajetInexistant"/>
+    <testcase name="Message d'erreur explicite" time="0.010" classname="2TrajetsApi10TrajetInexistant"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-11 Créer une réservation (siège 10)" id="8678297f-fedf-4715-aa3c-5f3915db78e0" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.026">
+    <testcase name="Code de statut = 200" time="0.026" classname="3ReservationsApi11CreerUneReservationSiege10"/>
+    <testcase name="Schéma : message + reservation_id (number)" time="0.026" classname="3ReservationsApi11CreerUneReservationSiege10"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-12 Réserver sans authentification" id="f644844b-52ad-4754-8f3f-a0388d1c98df" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.007">
+    <testcase name="Code de statut = 401" time="0.007" classname="3ReservationsApi12ReserverSansAuthentification"/>
+    <testcase name="Message d'erreur explicite" time="0.007" classname="3ReservationsApi12ReserverSansAuthentification"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-13 Réserver avec un jeton invalide" id="5c34e5b1-9836-4a16-a831-262a40837838" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.008">
+    <testcase name="Code de statut = 401" time="0.008" classname="3ReservationsApi13ReserverAvecUnJetonInvalide"/>
+    <testcase name="Message d'erreur explicite" time="0.008" classname="3ReservationsApi13ReserverAvecUnJetonInvalide"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-14 Réserver sans siège (données invalides)" id="9f62078f-e807-40e3-9b5b-050b1227277e" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.008">
+    <testcase name="Code de statut = 400" time="0.008" classname="3ReservationsApi14ReserverSansSiegeDonneesInvalides"/>
+    <testcase name="Message d'erreur explicite" time="0.008" classname="3ReservationsApi14ReserverSansSiegeDonneesInvalides"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-15 Réserver un siège déjà réservé (conflit)" id="0708ebc0-8e24-474d-8a66-b92a22b6e730" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.016">
+    <testcase name="Code de statut = 409" time="0.016" classname="3ReservationsApi15ReserverUnSiegeDejaReserveConflit"/>
+    <testcase name="Message d'erreur explicite" time="0.016" classname="3ReservationsApi15ReserverUnSiegeDejaReserveConflit"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-16 Réserver sur un trajet inexistant" id="8e7ea9fd-a161-41f9-8ce6-5e52274e3b13" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.013">
+    <testcase name="Code de statut = 404" time="0.013" classname="3ReservationsApi16ReserverSurUnTrajetInexistant"/>
+    <testcase name="Message d'erreur explicite" time="0.013" classname="3ReservationsApi16ReserverSurUnTrajetInexistant"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-17 Lister mes réservations" id="f8b646aa-1009-4332-9d65-47bc2cf09dca" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.048">
+    <testcase name="Code de statut = 200" time="0.048" classname="3ReservationsApi17ListerMesReservations"/>
+    <testcase name="Schéma : bookings[] contenant la nouvelle réservation" time="0.048" classname="3ReservationsApi17ListerMesReservations"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-18 Billet d'un autre passager (accès refusé)" id="5a3e97bc-b147-4527-adf6-514f40b4b694" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.013">
+    <testcase name="Code de statut = 404" time="0.013" classname="3ReservationsApi18BilletDunAutrePassagerAccesRefuse"/>
+    <testcase name="Message d'erreur explicite" time="0.013" classname="3ReservationsApi18BilletDunAutrePassagerAccesRefuse"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-19 Annuler ma réservation (confirmed → cancelled)" id="2c2814eb-866b-41d3-a12d-4d0cf77b4034" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="Code de statut = 200" time="0.015" classname="3ReservationsApi19AnnulerMaReservationConfirmedCancelled"/>
+    <testcase name="Message" time="0.015" classname="3ReservationsApi19AnnulerMaReservationConfirmedCancelled"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-20 Annuler une 2e fois (cancelled → cancelled interdit)" id="6f81f80e-18b1-4d52-a422-168c4a0e1c6f" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 409" time="0.011" classname="3ReservationsApi20AnnulerUne2EFoisCancelledCancelledInterdit"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="3ReservationsApi20AnnulerUne2EFoisCancelledCancelledInterdit"/>
+  </testsuite>
+  <testsuite name="3. Réservations / API-21 Annuler un voyage passé (completed → cancelled interdit)" id="1a65f0e9-eda3-45dc-bef5-294092bfc28e" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.013">
+    <testcase name="Code de statut = 409" time="0.013" classname="3ReservationsApi21AnnulerUnVoyagePasseCompletedCancelledInterdit"/>
+    <testcase name="Message d'erreur explicite" time="0.013" classname="3ReservationsApi21AnnulerUnVoyagePasseCompletedCancelledInterdit"/>
+  </testsuite>
+  <testsuite name="4. Administration / API-22 Statistiques admin" id="99ccb9cd-a5b5-4055-8441-dad2b1be1327" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.017">
+    <testcase name="Code de statut = 200" time="0.017" classname="4AdministrationApi22StatistiquesAdmin"/>
+    <testcase name="Schéma : users, bookings, revenue numériques" time="0.017" classname="4AdministrationApi22StatistiquesAdmin"/>
+  </testsuite>
+  <testsuite name="4. Administration / API-23 Statistiques admin avec un compte client (droits insuffisants)" id="87606bec-bcb7-416e-aef2-169f828ad276" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.010">
+    <testcase name="Code de statut = 403" time="0.010" classname="4AdministrationApi23StatistiquesAdminAvecUnCompteClientDroitsInsuffisants"/>
+    <testcase name="Message d'erreur explicite" time="0.010" classname="4AdministrationApi23StatistiquesAdminAvecUnCompteClientDroitsInsuffisants"/>
+  </testsuite>
+  <testsuite name="4. Administration / API-24 Confirmer une réservation en attente (pending → confirmed)" id="3f61a08c-05d9-4e67-9a82-b05441210809" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.030">
+    <testcase name="Code de statut = 200" time="0.030" classname="4AdministrationApi24ConfirmerUneReservationEnAttentePendingConfirmed"/>
+    <testcase name="Message" time="0.030" classname="4AdministrationApi24ConfirmerUneReservationEnAttentePendingConfirmed"/>
+  </testsuite>
+  <testsuite name="4. Administration / API-25 Confirmer une réservation annulée (cancelled → confirmed interdit)" id="15699c64-6b77-421a-9f9c-f6d2ab70aa6a" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="Code de statut = 409" time="0.015" classname="4AdministrationApi25ConfirmerUneReservationAnnuleeCancelledConfirmedInterdit"/>
+    <testcase name="Message d'erreur explicite" time="0.015" classname="4AdministrationApi25ConfirmerUneReservationAnnuleeCancelledConfirmedInterdit"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-26 Créer un trajet sans prix (données invalides)" id="dbe48cc6-594c-45a5-9ae9-8dec8354688a" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 400" time="0.011" classname="5ComplementsCampagneFinaleApi26CreerUnTrajetSansPrixDonneesInvalides"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="5ComplementsCampagneFinaleApi26CreerUnTrajetSansPrixDonneesInvalides"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-27 Créer un trajet qui englobe un trajet existant du même bus (chevauchement)" id="d17bf0e0-3385-45fb-a7fb-fbab99018ee3" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.017">
+    <testcase name="Code de statut = 400" time="0.017" classname="5ComplementsCampagneFinaleApi27CreerUnTrajetQuiEnglobeUnTrajetExistantDuMemeBusChevauchement"/>
+    <testcase name="Message d'erreur explicite" time="0.017" classname="5ComplementsCampagneFinaleApi27CreerUnTrajetQuiEnglobeUnTrajetExistantDuMemeBusChevauchement"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-28 Créer un trajet valide (bus libre)" id="a7c5edf0-c90d-4e3d-a7ee-029135dc88b4" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.032">
+    <testcase name="Code de statut = 200" time="0.032" classname="5ComplementsCampagneFinaleApi28CreerUnTrajetValideBusLibre"/>
+    <testcase name="Message de succès" time="0.032" classname="5ComplementsCampagneFinaleApi28CreerUnTrajetValideBusLibre"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-29 Annuler la réservation d'un autre passager (accès refusé)" id="382783dd-55d2-434c-a8be-677b83462aed" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.011">
+    <testcase name="Code de statut = 404" time="0.011" classname="5ComplementsCampagneFinaleApi29AnnulerLaReservationDunAutrePassagerAccesRefuse"/>
+    <testcase name="Message d'erreur explicite" time="0.011" classname="5ComplementsCampagneFinaleApi29AnnulerLaReservationDunAutrePassagerAccesRefuse"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-30 Réserver 10 sièges (valeur limite max + 1)" id="25b3c097-3d98-4675-a7cc-844d0f31fb6d" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.015">
+    <testcase name="Code de statut = 400" time="0.015" classname="5ComplementsCampagneFinaleApi30Reserver10SiegesValeurLimiteMax1"/>
+    <testcase name="Message d'erreur explicite" time="0.015" classname="5ComplementsCampagneFinaleApi30Reserver10SiegesValeurLimiteMax1"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-31 Réserver 9 sièges (valeur limite max)" id="016ae5fe-bd0c-4931-bd83-8051e0ed39e6" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.033">
+    <testcase name="Code de statut = 200" time="0.033" classname="5ComplementsCampagneFinaleApi31Reserver9SiegesValeurLimiteMax"/>
+    <testcase name="Montant = 9 × 15 TND" time="0.033" classname="5ComplementsCampagneFinaleApi31Reserver9SiegesValeurLimiteMax"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-32 Connexion avec le compte démo admin publié sur la page de login (sécurité)" id="22d4fc8d-575f-43d9-96ef-909a02cdfc15" timestamp="2026-11-19T20:25:57.862Z" tests="1" failures="0" errors="0" time="0.008">
+    <testcase name="Code de statut = 401" time="0.008" classname="5ComplementsCampagneFinaleApi32ConnexionAvecLeCompteDemoAdminPublieSurLaPageDeLoginSecurite"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-33 Avis avec une note hors bornes (6/5)" id="76451817-e39c-4d07-b3e0-b6fb41b3e955" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.007">
+    <testcase name="Code de statut = 400" time="0.007" classname="5ComplementsCampagneFinaleApi33AvisAvecUneNoteHorsBornes65"/>
+    <testcase name="Message d'erreur explicite" time="0.007" classname="5ComplementsCampagneFinaleApi33AvisAvecUneNoteHorsBornes65"/>
+  </testsuite>
+  <testsuite name="5. Compléments campagne finale / API-34 Rejeter une réservation déjà confirmée (confirmed → cancelled par admin interdit)" id="b121bed2-91b9-4fe0-8f4b-bb7548b9e4db" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="0" errors="0" time="0.014">
+    <testcase name="Code de statut = 409" time="0.014" classname="5ComplementsCampagneFinaleApi34RejeterUneReservationDejaConfirmeeConfirmedCancelledParAdminInterdit"/>
+    <testcase name="Message d'erreur explicite" time="0.014" classname="5ComplementsCampagneFinaleApi34RejeterUneReservationDejaConfirmeeConfirmedCancelledParAdminInterdit"/>
+  </testsuite>
+  <testsuite name="9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09]" id="5db6584f-3f01-49c9-8ec3-62ca7853f787" timestamp="2026-11-19T20:25:57.862Z" tests="2" failures="2" errors="0" time="0.026">
+    <testcase name="Code de statut = 400" time="0.026" classname="9DefautsConnusOuvertsExclusDeLaRegressionApi90ReserverSurLeTrajet3Bus2UnSiegeQuiAppartientAuBus1Ano09">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: d24e89ab-1583-4b94-aa25-8456adbfe392.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09].]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 200
+   at Object.eval sandbox-script.js:1:35).]]>
+      </failure>
+    </testcase>
+    <testcase name="Message d'erreur explicite" time="0.026" classname="9DefautsConnusOuvertsExclusDeLaRegressionApi90ReserverSurLeTrajet3Bus2UnSiegeQuiAppartientAuBus1Ano09">
+      <failure type="AssertionFailure" message="expected 'Booking successful' to match /does not belong/i">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: d24e89ab-1583-4b94-aa25-8456adbfe392.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09].]]>
+        <![CDATA[Test description: Message d'erreur explicite.]]>
+        <![CDATA[Error message: expected 'Booking successful' to match /does not belong/i.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 'Booking successful' to match /does not belong/i
+   at Object.eval sandbox-script.js:2:35).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="9. Défauts connus (ouverts — exclus de la régression) / API-91 Inscription avec un e-mail invalide et un mot de passe de 1 caractère [ANO-10]" id="e12744ee-439e-48d2-8125-4b9fc9e9a18d" timestamp="2026-11-19T20:25:57.862Z" tests="1" failures="1" errors="0" time="0.303">
+    <testcase name="Code de statut = 400" time="0.303" classname="9DefautsConnusOuvertsExclusDeLaRegressionApi91InscriptionAvecUnEMailInvalideEtUnMotDePasseDe1CaractereAno10">
+      <failure type="AssertionFailure" message="expected response to have status code 400 but got 200">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: d24e89ab-1583-4b94-aa25-8456adbfe392.]]>
+        <![CDATA[Collection name: BusInTunisia — Tests API (Semaines 8 à 10).]]>
+        <![CDATA[Request name: 9. Défauts connus (ouverts — exclus de la régression) / API-91 Inscription avec un e-mail invalide et un mot de passe de 1 caractère [ANO-10].]]>
+        <![CDATA[Test description: Code de statut = 400.]]>
+        <![CDATA[Error message: expected response to have status code 400 but got 200.]]>
+        <![CDATA[Stacktrace: AssertionError: expected response to have status code 400 but got 200
+   at Object.eval sandbox-script.js:1:36).]]>
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>

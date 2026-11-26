@@ -1,0 +1,227 @@
+
+> server@1.0.0 test:api
+> node tests/api/runApiTests.js --report=complet
+
+newman
+
+BusInTunisia — Tests API (Semaines 8 à 10)
+
+□ 1. Authentification
+└ API-01 Login client valide
+  POST http://localhost:5055/api/auth/login [200 OK, 516B, 278ms]
+  √  Code de statut = 200
+  √  Schéma : token (string) + user {id, email, name, role}
+
+└ API-02 Login mot de passe incorrect
+  POST http://localhost:5055/api/auth/login [401 Unauthorized, 310B, 188ms]
+  √  Code de statut = 401
+  √  Message d'erreur explicite
+
+└ API-03 Login sans mot de passe (données invalides)
+  POST http://localhost:5055/api/auth/login [400 Bad Request, 321B, 6ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+└ API-04 Login admin valide
+  POST http://localhost:5055/api/auth/login [200 OK, 516B, 126ms]
+  √  Code de statut = 200
+  √  Rôle admin
+
+└ API-05 Login second client
+  POST http://localhost:5055/api/auth/login [200 OK, 518B, 157ms]
+  √  Code de statut = 200
+
+└ API-06 Inscription avec e-mail déjà utilisé (conflit)
+  POST http://localhost:5055/api/auth/register [400 Bad Request, 310B, 11ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+└ API-07 Inscription sans nom (données invalides)
+  POST http://localhost:5055/api/auth/register [400 Bad Request, 327B, 11ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+□ 2. Trajets
+└ API-08 Rechercher Tunis → Sousse le 15/01/2030
+  GET http://localhost:5055/api/trips/search?departure=Tunis&destination=Sousse&date=2030-01-15 [200 OK, 450B, 18ms]
+  √  Code de statut = 200
+  √  Schéma : trips[] avec champs attendus et types corrects
+
+└ API-09 Détail d'un trajet et sièges réservés
+  GET http://localhost:5055/api/trips/1 [200 OK, 473B, 15ms]
+  √  Code de statut = 200
+  √  Schéma : trip + reservedSeats[] (sièges des réservations confirmées)
+
+└ API-10 Trajet inexistant
+  GET http://localhost:5055/api/trips/99999 [404 Not Found, 302B, 10ms]
+  √  Code de statut = 404
+  √  Message d'erreur explicite
+
+□ 3. Réservations
+└ API-11 Créer une réservation (siège 10)
+  POST http://localhost:5055/api/bookings [200 OK, 336B, 26ms]
+  √  Code de statut = 200
+  √  Schéma : message + reservation_id (number)
+
+└ API-12 Réserver sans authentification
+  POST http://localhost:5055/api/bookings [401 Unauthorized, 308B, 7ms]
+  √  Code de statut = 401
+  √  Message d'erreur explicite
+
+└ API-13 Réserver avec un jeton invalide
+  POST http://localhost:5055/api/bookings [401 Unauthorized, 304B, 8ms]
+  √  Code de statut = 401
+  √  Message d'erreur explicite
+
+└ API-14 Réserver sans siège (données invalides)
+  POST http://localhost:5055/api/bookings [400 Bad Request, 320B, 8ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+└ API-15 Réserver un siège déjà réservé (conflit)
+  POST http://localhost:5055/api/bookings [409 Conflict, 314B, 16ms]
+  √  Code de statut = 409
+  √  Message d'erreur explicite
+
+└ API-16 Réserver sur un trajet inexistant
+  POST http://localhost:5055/api/bookings [404 Not Found, 302B, 13ms]
+  √  Code de statut = 404
+  √  Message d'erreur explicite
+
+└ API-17 Lister mes réservations
+  GET http://localhost:5055/api/bookings/my [200 OK, 1.28kB, 48ms]
+  √  Code de statut = 200
+  √  Schéma : bookings[] contenant la nouvelle réservation
+
+└ API-18 Billet d'un autre passager (accès refusé)
+  GET http://localhost:5055/api/tickets/1 [404 Not Found, 304B, 13ms]
+  √  Code de statut = 404
+  √  Message d'erreur explicite
+
+└ API-19 Annuler ma réservation (confirmed → cancelled)
+  PUT http://localhost:5055/api/bookings/6/cancel [200 OK, 290B, 15ms]
+  √  Code de statut = 200
+  √  Message
+
+└ API-20 Annuler une 2e fois (cancelled → cancelled interdit)
+  PUT http://localhost:5055/api/bookings/6/cancel [409 Conflict, 345B, 11ms]
+  √  Code de statut = 409
+  √  Message d'erreur explicite
+
+└ API-21 Annuler un voyage passé (completed → cancelled interdit)
+  PUT http://localhost:5055/api/bookings/4/cancel [409 Conflict, 345B, 13ms]
+  √  Code de statut = 409
+  √  Message d'erreur explicite
+
+□ 4. Administration
+└ API-22 Statistiques admin
+  GET http://localhost:5055/api/admin/stats [200 OK, 304B, 17ms]
+  √  Code de statut = 200
+  √  Schéma : users, bookings, revenue numériques
+
+└ API-23 Statistiques admin avec un compte client (droits insuffisants)
+  GET http://localhost:5055/api/admin/stats [403 Forbidden, 309B, 10ms]
+  √  Code de statut = 403
+  √  Message d'erreur explicite
+
+└ API-24 Confirmer une réservation en attente (pending → confirmed)
+  PUT http://localhost:5055/api/admin/bookings/2/confirm [200 OK, 298B, 30ms]
+  √  Code de statut = 200
+  √  Message
+
+└ API-25 Confirmer une réservation annulée (cancelled → confirmed interdit)
+  PUT http://localhost:5055/api/admin/bookings/3/confirm [409 Conflict, 346B, 15ms]
+  √  Code de statut = 409
+  √  Message d'erreur explicite
+
+□ 5. Compléments campagne finale
+└ API-26 Créer un trajet sans prix (données invalides)
+  POST http://localhost:5055/api/admin/trips [400 Bad Request, 366B, 11ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+└ API-27 Créer un trajet qui englobe un trajet existant du même bus (chevauchement)
+  POST http://localhost:5055/api/admin/trips [400 Bad Request, 355B, 17ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+└ API-28 Créer un trajet valide (bus libre)
+  POST http://localhost:5055/api/admin/trips [200 OK, 293B, 32ms]
+  √  Code de statut = 200
+  √  Message de succès
+
+└ API-29 Annuler la réservation d'un autre passager (accès refusé)
+  PUT http://localhost:5055/api/bookings/1/cancel [404 Not Found, 307B, 11ms]
+  √  Code de statut = 404
+  √  Message d'erreur explicite
+
+└ API-30 Réserver 10 sièges (valeur limite max + 1)
+  POST http://localhost:5055/api/bookings [400 Bad Request, 324B, 15ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+└ API-31 Réserver 9 sièges (valeur limite max)
+  POST http://localhost:5055/api/bookings [200 OK, 337B, 33ms]
+  √  Code de statut = 200
+  √  Montant = 9 × 15 TND
+
+└ API-32 Connexion avec le compte démo admin publié sur la page de login (sécurité)
+  POST http://localhost:5055/api/auth/login [401 Unauthorized, 310B, 8ms]
+  √  Code de statut = 401
+
+└ API-33 Avis avec une note hors bornes (6/5)
+  POST http://localhost:5055/api/reviews [400 Bad Request, 331B, 7ms]
+  √  Code de statut = 400
+  √  Message d'erreur explicite
+
+└ API-34 Rejeter une réservation déjà confirmée (confirmed → cancelled par admin interdit)
+  PUT http://localhost:5055/api/admin/bookings/5/reject [409 Conflict, 345B, 14ms]
+  √  Code de statut = 409
+  √  Message d'erreur explicite
+
+□ 9. Défauts connus (ouverts — exclus de la régression)
+└ API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09]
+  POST http://localhost:5055/api/bookings [200 OK, 336B, 26ms]
+  1. Code de statut = 400
+  2. Message d'erreur explicite
+
+└ API-91 Inscription avec un e-mail invalide et un mot de passe de 1 caractère [ANO-10]
+  POST http://localhost:5055/api/auth/register [200 OK, 512B, 303ms]
+  3. Code de statut = 400
+
+┌─────────────────────────┬───────────────────┬──────────────────┐
+│                         │          executed │           failed │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│              iterations │                 1 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│                requests │                36 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│            test-scripts │                36 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│      prerequest-scripts │                 0 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│              assertions │                69 │                3 │
+├─────────────────────────┴───────────────────┴──────────────────┤
+│ total run duration: 5s                                         │
+├────────────────────────────────────────────────────────────────┤
+│ total data received: 3.77kB (approx)                           │
+├────────────────────────────────────────────────────────────────┤
+│ average response time: 42ms [min: 6ms, max: 303ms, s.d.: 72ms] │
+└────────────────────────────────────────────────────────────────┘
+
+  #  failure         detail                                                                                                                                                 
+                                                                                                                                                                            
+ 1.  AssertionError  Code de statut = 400                                                                                                                                   
+                     expected response to have status code 400 but got 200                                                                                                  
+                     at assertion:0 in test-script                                                                                                                          
+                     inside "9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09]"     
+                                                                                                                                                                            
+ 2.  AssertionError  Message d'erreur explicite                                                                                                                             
+                     expected 'Booking successful' to match /does not belong/i                                                                                              
+                     at assertion:1 in test-script                                                                                                                          
+                     inside "9. Défauts connus (ouverts — exclus de la régression) / API-90 Réserver sur le trajet 3 (bus 2) un siège qui appartient au bus 1 [ANO-09]"     
+                                                                                                                                                                            
+ 3.  AssertionError  Code de statut = 400                                                                                                                                   
+                     expected response to have status code 400 but got 200                                                                                                  
+                     at assertion:0 in test-script                                                                                                                          
+                     inside "9. Défauts connus (ouverts — exclus de la régression) / API-91 Inscription avec un e-mail invalide et un mot de passe de 1 caractère [ANO-10]" 

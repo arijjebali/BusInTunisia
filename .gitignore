@@ -1,0 +1,12 @@
+# Dépendances et artefacts générés
+node_modules/
+client/dist/
+server/coverage/
+client/e2e-report/
+client/test-results/
+client/playwright-report/
+
+# Secrets : ne jamais versionner (voir server/.env.example)
+.env
+.env.*
+!.env.example
