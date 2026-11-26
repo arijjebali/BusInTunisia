@@ -200,3 +200,23 @@ Un modèle de fiche pour GitHub Issues est fourni dans `.github/ISSUE_TEMPLATE/a
 | Cause | L'API renvoie `reservation_id` et `passenger.name`, l'IHM lit `id` et `user_name` (contrat API ↔ IHM non respecté) |
 | Détection | Découverte en relisant la capture d'écran du parcours Playwright : les assertions initiales vérifiaient le trajet et le siège, pas le numéro ni le nom |
 | Correctif | `Ticket.jsx` lit les bons champs ; assertions ajoutées à E2E-01 (échec constaté avant correctif, succès après) |
+
+## 6.3 Anomalies détectées pendant le projet DevOps
+
+Ces anomalies ont été trouvées après la campagne de test, lors de la mise en place de la chaîne DevOps
+(voir [`docs/devops/`](devops/README.md)) ; elles ne modifient pas les chiffres de la campagne ci-dessus.
+
+| ID | Titre | Module | Sévérité | Prio. | Statut |
+|---|---|---|---|:-:|---|
+| ANO-19 | La variable `DB_PORT` est documentée mais ignorée : l'API se connecte toujours au port 3306 | Configuration | Majeure | P2 | ✅ Corrigée, vérifiée |
+
+### ANO-19 — `DB_PORT` ignoré
+
+| Champ | Contenu |
+|---|---|
+| Reproduction | Base de test sur le port 3307 (`DB_PORT=3307`), puis `npm run test:regression` |
+| Attendu / obtenu | Connexion au port 3307 / `ECONNREFUSED 127.0.0.1:3306` : 11 tests d'intégration en échec |
+| Cause | `server/index.js` crée le pool MySQL sans l'option `port` ; seuls les scripts de test lisaient `DB_PORT` |
+| Détection | Exécution de la régression contre une base MariaDB conteneurisée sur un port non standard (lot 4). Masquée en CI, où la base écoute justement sur 3306 |
+| Correctif | `port: Number(process.env.DB_PORT) \|\| 3306` dans la configuration du pool |
+| Vérification | Régression complète verte sur le port 3307 (100 tests Jest, collection API) |
