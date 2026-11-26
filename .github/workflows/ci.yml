@@ -4,7 +4,7 @@
 #               ┌──► build ─────────────┬──► e2e
 #   quality ────┤                       │
 #               └──► backend (tests) ───┼──► docker (build → scan Trivy → ghcr.io)
-#   security ───────────────────────────┘
+#   security ───────────────────────────┘        └──► deploy-test (develop, approbation) → smoke tests
 #
 # Les noms des jobs « backend » et « e2e » sont exigés par la protection des branches main/develop :
 # ne pas les renommer sans mettre à jour les règles de protection.
@@ -421,3 +421,72 @@ jobs:
             echo '```'
             echo "Digest : \`${{ steps.push.outputs.digest }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------------
+  # Déploiement en environnement de TEST (continuous delivery).
+  # - uniquement après fusion dans develop (push), jamais pour une PR ni une branche de travail ;
+  # - « environment: test » : approbation manuelle requise (règle de l'environnement GitHub) et accès
+  #   aux secrets TEST_* ; GitHub conserve l'historique des déploiements et la version déployée ;
+  # - exécuté par le runner auto-hébergé du poste de test (label busintunisia-test) ;
+  # - déploie l'image PUBLIÉE et scannée (sha-<commit>), vérifie (health + smoke tests),
+  #   et revient automatiquement à la version précédente en cas d'échec (scripts/deploy.sh).
+  # Voir docs/devops/07-deploiement.md.
+  # ---------------------------------------------------------------------------
+  deploy-test:
+    name: Déploiement en test (smoke tests)
+    needs: [docker, e2e]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: [self-hosted, busintunisia-test]
+    environment:
+      name: test
+      url: http://localhost:8080
+    concurrency:
+      group: deploy-test
+      cancel-in-progress: false # un déploiement en cours n'est jamais interrompu
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Écrire les secrets de l'environnement hors du dépôt
+        env:
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          DB_ROOT_PASSWORD: ${{ secrets.TEST_DB_ROOT_PASSWORD }}
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
+        run: |
+          for v in DB_PASSWORD DB_ROOT_PASSWORD JWT_SECRET; do
+            [ -n "${!v}" ] || { echo "::error::Secret TEST_${v} absent de l'environnement GitHub « test »"; exit 1; }
+          done
+          mkdir -p "$HOME/.busintunisia"
+          umask 077
+          printf 'DB_PASSWORD=%s\nDB_ROOT_PASSWORD=%s\nJWT_SECRET=%s\n' \
+            "$DB_PASSWORD" "$DB_ROOT_PASSWORD" "$JWT_SECRET" > "$HOME/.busintunisia/test-secrets.env"
+
+      - name: Déployer sha-${{ github.sha }} et vérifier
+        run: bash scripts/deploy.sh "sha-${GITHUB_SHA::7}"
+
+      - name: Historique des déploiements
+        if: always()
+        run: bash scripts/rollback.sh --list
+
+      - name: Résumé du déploiement
+        if: always()
+        run: |
+          {
+            echo "### Déploiement en environnement de test"
+            echo ""
+            echo "- Image : \`ghcr.io/${GITHUB_REPOSITORY_OWNER}/busintunisia:sha-${GITHUB_SHA::7}\`"
+            echo "- URL : http://localhost:8080"
+            echo "- Version en service : \`$(cat "$HOME/.busintunisia/test-current" 2>/dev/null || echo inconnue)\`"
+            echo ""
+            echo '```'
+            cat reports/smoke-test.txt 2>/dev/null || echo "(pas de rapport de smoke tests)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapport-deploiement-test
+          path: reports/smoke-test.txt

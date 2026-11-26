@@ -1,0 +1,65 @@
+# Rollback de l'environnement de TEST vers une version stable, déclenché à la main
+# (onglet Actions → « Rollback (environnement de test) » → Run workflow).
+# Ne reconstruit rien : redéploie une image déjà publiée, puis repasse les smoke tests.
+# Voir docs/devops/08-supervision-incident-rollback.md.
+name: Rollback (environnement de test)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag d'image à restaurer (ex. sha-3f2a9c1). Vide = dernière version saine précédente."
+        required: false
+        default: ""
+      motif:
+        description: "Motif du rollback (référence de la fiche d'incident)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-test # jamais en même temps qu'un déploiement
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    name: Rollback en test
+    runs-on: [self-hosted, busintunisia-test]
+    environment:
+      name: test
+      url: http://localhost:8080
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Écrire les secrets de l'environnement hors du dépôt
+        env:
+          DB_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}
+          DB_ROOT_PASSWORD: ${{ secrets.TEST_DB_ROOT_PASSWORD }}
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
+        run: |
+          mkdir -p "$HOME/.busintunisia"
+          umask 077
+          printf 'DB_PASSWORD=%s\nDB_ROOT_PASSWORD=%s\nJWT_SECRET=%s\n' \
+            "$DB_PASSWORD" "$DB_ROOT_PASSWORD" "$JWT_SECRET" > "$HOME/.busintunisia/test-secrets.env"
+
+      - name: Rollback
+        env:
+          VERSION: ${{ inputs.version }}
+          MOTIF: ${{ inputs.motif }}
+        run: |
+          echo "Motif : $MOTIF — demandé par $GITHUB_ACTOR"
+          bash scripts/rollback.sh $VERSION
+
+      - name: Historique des déploiements
+        if: always()
+        run: bash scripts/rollback.sh --list
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapport-rollback-test
+          path: reports/smoke-test.txt
