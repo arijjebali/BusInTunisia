@@ -1,9 +1,9 @@
 # Pipeline CI de BusInTunisia — voir docs/devops/02-pipeline.md pour le rôle, les entrées,
 # les sorties et les conditions d'échec de chaque job.
 #
-#               ┌──► build ─────────────┐
-#   quality ────┤                       ├──► e2e
-#               └──► backend (tests) ───┘
+#               ┌──► build ─────────────┬──► e2e
+#   quality ────┤                       │
+#               └──► backend (tests) ───┴──► docker (image → ghcr.io)
 #
 # Les noms des jobs « backend » et « e2e » sont exigés par la protection des branches main/develop :
 # ne pas les renommer sans mettre à jour les règles de protection.
@@ -255,3 +255,72 @@ jobs:
           path: |
             client/e2e-report/
             client/test-results/
+
+  # ---------------------------------------------------------------------------
+  # Image Docker : construite à chaque pipeline, publiée dans GitHub Container Registry (ghcr.io)
+  # sauf pour les pull requests (le code d'une PR n'est pas encore validé : il n'est jamais publié).
+  # Tags : <version>-<sha> (identique à l'artefact), sha-<sha>, nom de branche, version semver (tags v*),
+  # latest (main uniquement). Voir docs/devops/04-conteneurisation.md.
+  # ---------------------------------------------------------------------------
+  docker:
+    name: Image Docker (build et publication)
+    runs-on: ubuntu-latest
+    needs: [build, backend]
+    permissions:
+      contents: read
+      packages: write # publication dans ghcr.io avec le jeton éphémère du pipeline
+    env:
+      IMAGE: ghcr.io/${{ github.repository_owner }}/busintunisia
+      PUBLISH: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Connexion à ghcr.io (jeton GITHUB_TOKEN, aucun mot de passe stocké)
+        if: env.PUBLISH == 'true'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calculer les tags de l'image
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=${{ needs.build.outputs.version }}
+            type=sha,prefix=sha-,format=short
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Construire (et publier hors PR)
+        id: push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: ${{ env.PUBLISH == 'true' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            APP_VERSION=${{ needs.build.outputs.version }}
+            GIT_SHA=${{ github.sha }}
+          # Cache des couches Docker entre pipelines (stockage de cache GitHub Actions).
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Résumé de l'image
+        run: |
+          {
+            echo "### Image Docker"
+            echo ""
+            if [ "$PUBLISH" = "true" ]; then echo "Publiée dans **ghcr.io** :"; else echo "Construite (non publiée : pull request) :"; fi
+            echo ""
+            echo '```'
+            echo "${{ steps.meta.outputs.tags }}"
+            echo '```'
+            echo "Digest : \`${{ steps.push.outputs.digest }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
