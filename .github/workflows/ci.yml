@@ -33,13 +33,14 @@ permissions:
 
 env:
   NODE_VERSION: 22
-  # Base MariaDB jetable créée par le service du job : valeurs propres à la CI, sans valeur hors du pipeline.
+  # Base MariaDB jetable (service du job, détruite en fin de job, injoignable hors du runner) :
+  # mot de passe sans valeur hors du pipeline, conservé en clair et justifié (docs/devops/05-configuration.md).
   DB_HOST: 127.0.0.1
   DB_PORT: 3306
   DB_USER: root
   DB_PASSWORD: root
   TEST_DB_NAME: bus_in_tunisia_test
-  JWT_SECRET: ci-only-secret-not-used-in-production
+  # JWT_SECRET n'est plus écrit ici : il est généré aléatoirement à chaque exécution (étape « secret JWT éphémère »).
 
 jobs:
   # ---------------------------------------------------------------------------
@@ -174,6 +175,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: server/package-lock.json
+      - name: Générer un secret JWT éphémère (aléatoire, masqué dans les journaux)
+        run: |
+          SECRET=$(openssl rand -hex 32)
+          echo "::add-mask::$SECRET"
+          echo "JWT_SECRET=$SECRET" >> "$GITHUB_ENV"
       - run: npm ci
       - name: Tests unitaires + intégration avec seuils de couverture
         run: npm run test:coverage
@@ -221,6 +227,11 @@ jobs:
           cache-dependency-path: |
             client/package-lock.json
             server/package-lock.json
+      - name: Générer un secret JWT éphémère (aléatoire, masqué dans les journaux)
+        run: |
+          SECRET=$(openssl rand -hex 32)
+          echo "::add-mask::$SECRET"
+          echo "JWT_SECRET=$SECRET" >> "$GITHUB_ENV"
       - run: npm ci
         working-directory: server
       - run: npm ci
