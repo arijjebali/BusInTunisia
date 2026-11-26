@@ -12,7 +12,8 @@
     "test:api:regression": "node tests/api/runApiTests.js --regression --report=regression",
     "test:perf": "node tests/perf/loadTest.js",
     "test:regression": "npm run test:coverage && npm run test:api:regression",
-    "db:reset": "node tests/db/resetTestDb.js"
+    "db:reset": "node tests/db/resetTestDb.js",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
@@ -28,8 +29,13 @@
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "autocannon": "^8.0.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jest": "^29.17.1",
+    "globals": "^17.14.0",
     "jest": "^29.7.0",
+    "jest-junit": "^17.0.0",
     "newman": "^6.2.3",
     "supertest": "^7.3.2"
   },
@@ -66,6 +72,18 @@
         "functions": 90,
         "lines": 90
       }
-    }
+    },
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "reports/junit",
+          "outputName": "jest-junit.xml",
+          "classNameTemplate": "{classname}",
+          "titleTemplate": "{title}"
+        }
+      ]
+    ]
   }
 }

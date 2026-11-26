@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test",
-    "test:e2e:report": "playwright show-report e2e-report"
+    "test:e2e:report": "playwright show-report e2e-report",
+    "lint": "eslint ."
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -20,11 +21,16 @@
     "react-router-dom": "^6.24.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.65.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.6",
     "vite": "^5.3.4"

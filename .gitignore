@@ -10,3 +10,7 @@ client/playwright-report/
 .env
 .env.*
 !.env.example
+
+# Rapports générés localement
+server/reports/
+client/reports/
