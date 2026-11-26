@@ -55,7 +55,15 @@ if ! compose up -d --no-build --wait --wait-timeout 120; then
   deploy_ok=false
 else
   echo "▶ 3/4 Smoke tests sur $BASE_URL"
-  if "$ROOT/scripts/smoke-test.sh" "$BASE_URL" "$COMMIT"; then deploy_ok=true; else deploy_ok=false; fi
+  if "$ROOT/scripts/smoke-test.sh" "$BASE_URL" "$COMMIT"; then
+    deploy_ok=true
+  else
+    deploy_ok=false
+    # Conserver les indices AVANT le rollback, qui remplacera le conteneur défectueux et ses journaux.
+    echo "── Journal de la version $TAG (avertissements et erreurs, pour le diagnostic) :"
+    compose logs --no-log-prefix --tail=200 app | grep -E '"level":"(warn|error)"' | tail -n 10 \
+      | tee "${REPORT_DIR:-reports}/incident-$TAG.log" || true
+  fi
 fi
 
 if [ "$deploy_ok" = true ]; then

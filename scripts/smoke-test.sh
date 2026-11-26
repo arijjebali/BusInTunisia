@@ -31,7 +31,7 @@ health=$(curl -s -m 10 -w '\n%{http_code}' "$BASE_URL/api/health")
 health_code=$(tail -n1 <<<"$health")
 health_body=$(sed '$d' <<<"$health")
 log "  /api/health → $health_code $health_body"
-check "Sonde de santé : HTTP 200" '[ "$health_code" = 200 ]'
+check "Sonde de santé : HTTP 200 (obtenu $health_code)" '[ "$health_code" = 200 ]'
 check "Sonde de santé : status ok" 'grep -q "\"status\":\"ok\"" <<<"$health_body"'
 check "Sonde de santé : base de données up" 'grep -q "\"database\":\"up\"" <<<"$health_body"'
 if [ -n "$EXPECTED_COMMIT" ]; then
@@ -40,12 +40,12 @@ fi
 
 # 2. Interface servie
 home_code=$(curl -s -m 10 -o /dev/null -w '%{http_code}' "$BASE_URL/")
-check "Page d'accueil : HTTP 200" '[ "$home_code" = 200 ]'
+check "Page d'accueil : HTTP 200 (obtenu $home_code)" '[ "$home_code" = 200 ]'
 check "Page d'accueil : application React" 'curl -s -m 10 "$BASE_URL/" | grep -q "<div id=\"root\">"'
 
 # 3. Fonction métier principale : recherche de trajets (lecture en base)
 search_code=$(curl -s -m 10 -o /dev/null -w '%{http_code}' "$BASE_URL/api/trips/search?departure=Tunis&destination=Sfax&date=$(date +%Y-%m-%d)")
-check "Recherche de trajets : HTTP 200" '[ "$search_code" = 200 ]'
+check "Recherche de trajets : HTTP 200 (obtenu $search_code)" '[ "$search_code" = 200 ]'
 
 # 4. Authentification : un compte de test obtient un jeton
 login=$(curl -s -m 10 -H 'Content-Type: application/json' \
@@ -54,7 +54,7 @@ check "Connexion d'un compte de test : jeton reçu" 'grep -q "\"token\":\"" <<<"
 
 # 5. Contrôle d'accès toujours actif
 admin_code=$(curl -s -m 10 -o /dev/null -w '%{http_code}' "$BASE_URL/api/admin/stats")
-check "Route d'administration sans jeton : HTTP 401" '[ "$admin_code" = 401 ]'
+check "Route d'administration sans jeton : HTTP 401 (obtenu $admin_code)" '[ "$admin_code" = 401 ]'
 
 log "Résultat : $pass réussi(s), $fail échec(s)"
 [ "$fail" -eq 0 ]
