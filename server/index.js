@@ -21,7 +21,13 @@ if (configProblems.length) {
 }
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Supervision (lot 7) : journal JSON structuré, identifiant de requête et indicateurs techniques.
+const { createLogger, createMetrics, requestObserver } = require('./src/observability');
+const logger = createLogger({ level: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'test' ? 'warn' : 'info') });
+const metrics = createMetrics();
+
 const app = express();
+app.use(requestObserver({ logger, metrics }));
 app.use(cors());
 app.use(express.json());
 
@@ -38,9 +44,9 @@ try {
     connectionLimit: 10,
     queueLimit: 0
   });
-  console.log("MySQL connection pool created.");
+  logger.info('db_pool_created', { host: process.env.DB_HOST || 'localhost', database: process.env.DB_NAME || 'bus_in_tunisia' });
 } catch (err) {
-  console.error("Failed to create MySQL pool:", err);
+  logger.error('db_pool_failed', { error: err.message });
 }
 
 const bookingService = new BookingService(createBookingRepository(pool));
@@ -65,14 +71,27 @@ app.get('/api/health', async (req, res) => {
     health.status = 'degraded';
     health.checks.database = 'down';
     health.error = err.code || 'DB_ERROR';
+    // Cause détaillée dans le journal (pas dans la réponse publique) : point de départ du diagnostic.
+    logger.warn('health_degraded', { check: 'database', code: err.code, error: err.message });
   }
   res.set('Cache-Control', 'no-store').status(health.status === 'ok' ? 200 : 503).json(health);
+});
+
+// Indicateurs techniques (supervision) : trafic, erreurs, temps de réponse, disponibilité du processus.
+// Aucune donnée métier ni personnelle n'y figure.
+app.get('/api/metrics', (req, res) => {
+  res.set('Cache-Control', 'no-store').json({
+    version: process.env.APP_VERSION || 'dev',
+    commit: process.env.GIT_SHA || 'unknown',
+    environment: process.env.APP_ENV || 'development',
+    ...metrics.snapshot(),
+  });
 });
 
 // Traduit les erreurs métier (statusCode) en réponse HTTP
 const sendServiceError = (res, error) => {
   if (error.statusCode) return res.status(error.statusCode).json({ message: error.message });
-  console.error(error);
+  logger.error('unhandled_error', { requestId: res.req?.id, code: error.code, error: error.message });
   return res.status(500).json({ message: 'Server error' });
 };
 
@@ -140,7 +159,7 @@ app.post('/api/auth/login', async (req, res) => {
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
     res.json({ token, user });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -182,7 +201,7 @@ app.post('/api/auth/register', async (req, res) => {
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
     res.json({ token, user });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -263,7 +282,7 @@ app.get('/api/trips/search', async (req, res) => {
     const [rows] = await pool.query(query, [departure, destination, date]);
     res.json({ trips: rows });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -298,7 +317,7 @@ app.get('/api/trips/:id', async (req, res) => {
 
     res.json({ trip: rows[0], reservedSeats });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -355,7 +374,7 @@ app.post('/api/bookings', authMiddleware, async (req, res) => {
   } catch (error) {
     await connection.rollback();
     if (error.statusCode) return sendServiceError(res, error);
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Booking failed' });
   } finally {
     connection.release();
@@ -389,7 +408,7 @@ app.get('/api/bookings/my', authMiddleware, async (req, res) => {
     }));
     res.json({ bookings });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -595,7 +614,7 @@ const validateBusPayload = ({ registration_number, capacity, type, operator_id }
 const sendBusDbError = (res, err) => {
   if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ message: 'Registration number already exists' });
   if (err.code === 'ER_NO_REFERENCED_ROW_2') return res.status(400).json({ message: 'Operator does not exist' });
-  console.error(err);
+  logger.error('unhandled_error', { requestId: res.req?.id, code: err.code, error: err.message });
   return res.status(500).json({ message: 'Server error' });
 };
 
@@ -833,7 +852,7 @@ app.post('/api/groups', authMiddleware, async (req, res) => {
 
     res.json({ message: 'Group request submitted' });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -851,7 +870,7 @@ app.get('/api/groups/my', authMiddleware, async (req, res) => {
     `, [req.user.id]);
     res.json({ groups: rows });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -877,7 +896,7 @@ app.get('/api/operator/trips', authMiddleware, async (req, res) => {
     const [rows] = await pool.query(query, [req.user.id]);
     res.json({ trips: rows });
   } catch (error) {
-    console.error(error);
+    logger.error('unhandled_error', { requestId: req.id, path: req.path, code: error.code, error: error.message });
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -900,7 +919,7 @@ app.use('/api', (req, res) => res.status(404).json({ message: 'Not found' }));
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    logger.info('server_started', { port: Number(PORT), version: process.env.APP_VERSION || 'dev', environment: process.env.APP_ENV || 'development' });
   });
 }
 

@@ -43,3 +43,24 @@ describe('GET /api/health', () => {
     expect(res.body).toEqual({ message: 'Not found' });
   });
 });
+
+describe('GET /api/metrics et identifiant de requête', () => {
+  test('INT-OBS-01 : chaque réponse porte un X-Request-Id ; un identifiant fourni est conservé', async () => {
+    const generated = await request(app).get('/api/health');
+    expect(generated.headers['x-request-id']).toMatch(/^[0-9a-f-]{36}$/);
+    const provided = await request(app).get('/api/health').set('X-Request-Id', 'diag-42');
+    expect(provided.headers['x-request-id']).toBe('diag-42');
+  });
+
+  test('INT-OBS-02 : indicateurs techniques (trafic, erreurs, temps de réponse, version)', async () => {
+    await request(app).get('/api/route-inexistante'); // au moins un 4xx
+    const res = await request(app).get('/api/metrics');
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ version: '9.9.9-test', commit: 'abc1234' });
+    expect(res.body.requests.total).toBeGreaterThanOrEqual(3);
+    expect(res.body.requests.byStatus['4xx']).toBeGreaterThanOrEqual(1);
+    expect(res.body.errorRate).toBeGreaterThan(0); // le 503 simulé par INT-HEALTH-02
+    expect(res.body.lastServerError).toMatchObject({ path: '/api/health', status: 503 });
+    expect(res.body.responseTimeMs.sample).toBeGreaterThan(0);
+  });
+});
