@@ -84,8 +84,19 @@ gate passée (aucune vulnérabilité critique corrigeable), image publiée — v
 
 ![Pipeline avec contrôles de sécurité](preuves/lot5-pipeline-securite.png)
 
+**Analyse détaillée (scan local de l'image `sha-86c90bd`, Trivy 0.76.2)** : sur 324 cibles, **0 vulnérabilité** dans
+le système Alpine et **0** dans les dépendances de l'application, mais **10 HIGH** (aucune CRITICAL) dans le client
+`npm` fourni par l'image de base `node:22-alpine` (`brace-expansion`, `picomatch`, `sigstore`, `pacote`…). Le gate
+(CRITICAL uniquement) les laissait passer à juste titre ; elles ont néanmoins été **corrigées** : `npm`, `npx` et
+`corepack` ne servent qu'à construire, l'image finale ne les exécute jamais (`CMD ["node", "index.js"]`), ils sont
+donc supprimés de l'étape `runtime` du Dockerfile. Résultat : **0 HIGH / 0 CRITICAL**, conteneur *healthy*,
+smoke tests verts.
+
+![Trivy avant / après](preuves/lot5-trivy-avant-apres.png)
+
 Mesures qui réduisent la surface d'attaque de l'image (lot 4) : base `node:22-alpine` minimale, dépendances de
-production uniquement, utilisateur non root, aucun secret dans l'image (`.dockerignore`).
+production uniquement, **pas de gestionnaire de paquets à l'exécution**, utilisateur non root, aucun secret dans
+l'image (`.dockerignore`).
 
 ## 6.5 Synthèse : alertes traitées
 
@@ -99,3 +110,4 @@ production uniquement, utilisateur non root, aucun secret dans l'image (`.docker
 | 6 | Chaîne `newman` (dev) | npm audit | ⚠️ Acceptée, justifiée § 6.2 |
 | 7 | `vite` serveur de dev | npm audit | ⚠️ Acceptée, justifiée § 6.2 |
 | 8 | Régression ANO-20 introduite par la correction n° 1 | tests de régression | ✅ Corrigée |
+| 9 | 10 HIGH dans le `npm` de l'image de base | Trivy | ✅ Corrigées (npm retiré de l'image d'exécution) |

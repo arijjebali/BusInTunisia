@@ -29,7 +29,7 @@
 | Couverture de code (serveur) | 58,4 % des lignes (52,3 % au début du projet) ; services et dépôts : 100 % des lignes | rapport Jest |
 | Tests automatisés | 97 → **130** tests Jest ; 34 requêtes / 66 assertions API ; 4 parcours E2E | |
 | Défauts détectés avant le déploiement | **4** : ANO-19 (DB_PORT ignoré), ANO-20 (régression critique après mise à jour), 8 erreurs ESLint, jeton factice dans un test | registre, [03](03-qualite-tests.md), [06](06-securite.md) |
-| Vulnérabilités détectées / corrigées | Production : **10 détectées, 10 hautes et critiques corrigées** (2 modérées client restantes, sous le seuil) ; secrets : 113 jetons traités | [06](06-securite.md) |
+| Vulnérabilités détectées / corrigées | Dépendances de production : **10 hautes et critiques corrigées** (2 modérées client restantes, sous le seuil) ; image : **10 HIGH corrigées** (Trivy) ; secrets : 113 jetons traités | [06](06-securite.md) |
 | Taux d'échec des déploiements en test | 2 / 9 (22 %) — les 2 échecs sont les simulations volontaires d'INC-01, bloquées par les smoke tests | `rollback.sh --list` |
 | Délai de restauration (MTTR) | **≈ 11 s** (rollback automatique, INC-01) ; ≈ 15 s (INC-02, redémarrage de la base) | fiches d'incident |
 
@@ -42,7 +42,7 @@ Signalé conformément au § 14 de l'énoncé : ces éléments ne sont pas prés
 | Exécution du job `deploy-test` **par le pipeline** et approbation manuelle | Nécessite le runner auto-hébergé, l'environnement GitHub `test` et ses secrets, réglages réservés au propriétaire du compte | Procédure [07 § 7.1](07-deploiement.md#71-prérequis-à-configurer-une-fois), puis fusion dans `develop` |
 | Fusion des PR des étapes 3 à 10 dans `develop`, puis release vers `main` | Actions réservées au propriétaire (pas d'accès API délégué) | Ouvrir et fusionner les PR dans l'ordre (§ 9.5) |
 | Première analyse CodeQL | Le workflow se déclenche sur `develop`, `main` et les PR | Automatique à la première PR |
-| Scan Trivy local | Échec du téléchargement de la base de vulnérabilités (réseau lent) ; le scan **en CI** a réussi | Relancer localement si besoin de la capture |
+
 | Revue par un pair | Projet individuel : revue commentée par l'auteur (GitHub interdit l'auto-approbation) | En binôme : 1 approbation obligatoire |
 | Rotation du `JWT_SECRET` local | Fichier personnel `server/.env`, non modifié sans accord | Générer une nouvelle valeur |
 
