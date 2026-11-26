@@ -42,7 +42,6 @@ Signalé conformément au § 14 de l'énoncé : ces éléments ne sont pas prés
 | Exécution du job `deploy-test` **par le pipeline** et approbation manuelle | Nécessite le runner auto-hébergé, l'environnement GitHub `test` et ses secrets, réglages réservés au propriétaire du compte | Procédure [07 § 7.1](07-deploiement.md#71-prérequis-à-configurer-une-fois), puis fusion dans `develop` |
 | Fusion des PR des étapes 3 à 10 dans `develop`, puis release vers `main` | Actions réservées au propriétaire (pas d'accès API délégué) | Ouvrir et fusionner les PR dans l'ordre (§ 9.5) |
 | Première analyse CodeQL | Le workflow se déclenche sur `develop`, `main` et les PR | Automatique à la première PR |
-
 | Revue par un pair | Projet individuel : revue commentée par l'auteur (GitHub interdit l'auto-approbation) | En binôme : 1 approbation obligatoire |
 | Rotation du `JWT_SECRET` local | Fichier personnel `server/.env`, non modifié sans accord | Générer une nouvelle valeur |
 
