@@ -85,7 +85,7 @@ export default function GroupTrip() {
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">Travel Together</h1>
         <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
-          Planning a group trip? Fill in the details and we'll arrange a dedicated bus with exclusive pricing.
+          Planning a group trip? Fill in the details and we&apos;ll arrange a dedicated bus with exclusive pricing.
         </p>
       </div>
 

@@ -34,7 +34,7 @@ export default function AdminDashboard() {
       setStats(st.data); setUsers(us.data.users); setRoutes(rt.data); 
       setTrips(tr.data); setCities(ci.data); setBuses(bu.data);
       setBookings(bk.data); setGroups(gr.data); setOperators(op.data.operators);
-    } catch (e) {
+    } catch {
       toast.error('Failed to load admin data');
     } finally {
       setLoading(false);

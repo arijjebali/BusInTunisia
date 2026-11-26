@@ -55,7 +55,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-sm px-4 py-2 rounded-full mb-6 border border-white/20">
               <Zap size={14} className="text-yellow-300" />
-              Tunisia's #1 Bus Booking Platform
+              Tunisia&apos;s #1 Bus Booking Platform
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 leading-tight">
               Travel Smarter<br />

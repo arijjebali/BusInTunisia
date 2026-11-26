@@ -263,7 +263,7 @@ export default function UserDashboard() {
             <div className="card text-center py-16">
               <Bell size={48} className="text-gray-300 mx-auto mb-4" />
               <h3 className="font-bold text-gray-900 dark:text-white mb-2">No notifications yet</h3>
-              <p className="text-gray-500">You'll be notified about your bookings and trips here.</p>
+              <p className="text-gray-500">You&apos;ll be notified about your bookings and trips here.</p>
             </div>
           )
         }

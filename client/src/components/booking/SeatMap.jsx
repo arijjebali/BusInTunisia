@@ -16,7 +16,7 @@ export default function SeatMap({ totalSeats = 40, reserved = [], selected = [],
           { cls: 'bg-gray-200 dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600', label: 'Available' },
           { cls: 'bg-burgundy-800 border-2 border-burgundy-900', label: 'Selected', text: 'text-white' },
           { cls: 'bg-red-100 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 opacity-70', label: 'Reserved' },
-        ].map(({ cls, label, text }) => (
+        ].map(({ cls, label }) => (
           <div key={label} className="flex items-center gap-2">
             <div className={`w-6 h-6 rounded-md ${cls}`} />
             <span className="text-gray-600 dark:text-gray-400">{label}</span>

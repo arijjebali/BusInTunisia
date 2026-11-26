@@ -116,7 +116,7 @@ export default function Login() {
             )}
 
             <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-5">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link to="/register" className="text-burgundy-800 dark:text-burgundy-400 font-semibold hover:underline">
                 Create one
               </Link>
