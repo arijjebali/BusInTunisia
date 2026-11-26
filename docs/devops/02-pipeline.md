@@ -54,4 +54,9 @@ L'image Docker (lot 4) reprend la même règle de versionnement.
 
 ## 2.5 Preuves
 
-Voir les captures `lot2-*` dans [preuves/](preuves/) : graphe des jobs, journal du build, artefact téléchargeable.
+Premier pipeline structuré (lot 2) puis pipeline complet final (7 jobs ; le déploiement est ignoré hors de `develop`) :
+
+![Pipeline du lot 2](preuves/lot2-pipeline-graphe.png)
+![Pipeline complet](preuves/lot6-pipeline-complet.png)
+
+Le pipeline complet ajoute les jobs `security`, `docker` et `deploy-test` : voir [06](06-securite.md) et [07](07-deploiement.md).

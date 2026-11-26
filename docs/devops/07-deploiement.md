@@ -97,4 +97,6 @@ Déploiement de la version N-1 (`sha-a6bb8d4`) puis de la version N (`sha-2e2dc0
 ![Trace de la version déployée](preuves/lot6-trace-version-deployee.png)
 ![Application en environnement de test](preuves/lot6-application-test-8080.png)
 
-Le déploiement par le pipeline (job `deploy-test`) s'exécute dès que les prérequis du § 7.1 sont en place.
+Dans le pipeline, `deploy-test` est **ignoré** sur les branches de fonctionnalité (condition `refs/heads/develop`) ; il s'exécutera après fusion dans `develop`, une fois les prérequis du § 7.1 en place :
+
+![Pipeline complet, déploiement conditionné à develop](preuves/lot6-pipeline-complet.png)
