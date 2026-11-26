@@ -13,10 +13,13 @@ const { createBookingRepository } = require('./src/repositories/bookingRepositor
 const { createBusRepository } = require('./src/repositories/busRepository');
 
 // ANO-15 : plus de secret JWT par défaut ('secret') — le serveur refuse de démarrer sans JWT_SECRET.
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET must be defined (see server/.env)');
+// Lot 5 : règles plus strictes en environnement test/production (longueur du secret, comptes de démo…).
+const { validateConfig } = require('./src/config');
+const configProblems = validateConfig(process.env);
+if (configProblems.length) {
+  throw new Error(`Configuration invalide :\n - ${configProblems.join('\n - ')}`);
 }
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const app = express();
 app.use(cors());
