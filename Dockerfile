@@ -39,6 +39,11 @@ ENV NODE_ENV=production \
     APP_VERSION=${APP_VERSION} \
     GIT_SHA=${GIT_SHA}
 
+# Sécurité : npm/npx/corepack ne servent qu'à construire, pas à exécuter (CMD = node). Trivy relevait
+# 10 vulnérabilités HIGH dans le npm fourni par l'image de base : on le retire de l'image finale.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+           /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+
 WORKDIR /app/server
 COPY --from=server-deps --chown=node:node /app/server/node_modules ./node_modules
 COPY --chown=node:node server/package.json server/index.js ./
