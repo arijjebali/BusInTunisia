@@ -5358,7 +5358,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -6068,7 +6068,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -6309,7 +6309,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDgsImV4cCI6MTc5NTIwNjM0OH0.6KP0UI6YOB8peuqB-tYaZSaCT1zo0AqTvbsPxqAmuCo"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -6547,7 +6547,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -6773,7 +6773,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -7958,7 +7958,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDgsImV4cCI6MTc5NTIwNjM0OH0.6KP0UI6YOB8peuqB-tYaZSaCT1zo0AqTvbsPxqAmuCo"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -8166,7 +8166,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -8372,7 +8372,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -8627,7 +8627,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -8884,7 +8884,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk1MTE5OTQ4LCJleHAiOjE3OTUyMDYzNDh9.2e4QrLexvot6pUNVG_5FR0VrBDNPEtYiRc3FeCNvWM4"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -9097,7 +9097,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -9312,7 +9312,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk1MTE5OTQ4LCJleHAiOjE3OTUyMDYzNDh9.2e4QrLexvot6pUNVG_5FR0VrBDNPEtYiRc3FeCNvWM4"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -9528,7 +9528,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk1MTE5OTQ4LCJleHAiOjE3OTUyMDYzNDh9.2e4QrLexvot6pUNVG_5FR0VrBDNPEtYiRc3FeCNvWM4"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -9791,7 +9791,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk1MTE5OTQ4LCJleHAiOjE3OTUyMDYzNDh9.2e4QrLexvot6pUNVG_5FR0VrBDNPEtYiRc3FeCNvWM4"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -10080,7 +10080,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk1MTE5OTQ4LCJleHAiOjE3OTUyMDYzNDh9.2e4QrLexvot6pUNVG_5FR0VrBDNPEtYiRc3FeCNvWM4"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -10358,7 +10358,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk1MTE5OTQ4LCJleHAiOjE3OTUyMDYzNDh9.2e4QrLexvot6pUNVG_5FR0VrBDNPEtYiRc3FeCNvWM4"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -10576,7 +10576,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDgsImV4cCI6MTc5NTIwNjM0OH0.6KP0UI6YOB8peuqB-tYaZSaCT1zo0AqTvbsPxqAmuCo"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -10797,7 +10797,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -11042,7 +11042,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -11528,7 +11528,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3OTUxMTk5NDcsImV4cCI6MTc5NTIwNjM0N30.GxRaNd6_P_SlDYXIqcEMoe0zpxd4so4RafHZ8J47aGM"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",
@@ -11777,7 +11777,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzk1MTE5OTQ4LCJleHAiOjE3OTUyMDYzNDh9.2e4QrLexvot6pUNVG_5FR0VrBDNPEtYiRc3FeCNvWM4"
+              "value": "Bearer [JWT-MASQUÉ]"
             },
             {
               "key": "User-Agent",

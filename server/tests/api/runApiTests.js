@@ -14,6 +14,7 @@ const { spawn } = require('child_process');
 const newman = require('newman');
 const { resetTestDb } = require('../db/resetTestDb');
 const { testDbConfig } = require('../db/testDbConfig');
+const { redactFile } = require('./redact');
 
 const args = process.argv.slice(2);
 const opt = (name) => (args.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1];
@@ -61,6 +62,8 @@ function waitForServer(timeoutMs = 15000) {
       }, (err, s) => (err ? reject(err) : resolve(s)));
     });
     process.exitCode = summary.run.failures.length ? 1 : 0;
+    // Les rapports contiennent les requêtes/réponses complètes : masquer les jetons avant tout archivage.
+    for (const ext of ['json', 'xml']) redactFile(path.join(reportsDir, `newman-report${suffix}.${ext}`));
   } finally {
     server.kill();
   }
