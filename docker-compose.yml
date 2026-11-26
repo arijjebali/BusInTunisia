@@ -1,0 +1,68 @@
+# Orchestration locale BusInTunisia : application + base MariaDB.
+#
+# Le même fichier sert à tous les environnements ; seules les variables changent (voir docs/devops/05-configuration.md) :
+#   Développement : cp .env.example .env  &&  docker compose up -d --build        → http://localhost:8000
+#   Test          : scripts/deploy.sh <tag>  (image publiée, projet « busintunisia-test ») → http://localhost:8080
+#
+# Les variables marquées « :? » sont obligatoires : Compose refuse de démarrer si elles manquent,
+# plutôt que de lancer l'application avec un mot de passe vide.
+
+name: ${COMPOSE_PROJECT_NAME:-busintunisia-dev}
+
+services:
+  db:
+    image: ${DB_IMAGE:-mariadb:10.11} # même version que la CI ; surchargeable (DB_IMAGE)
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD manquant (voir .env.example)}
+      MARIADB_DATABASE: ${DB_NAME:-bus_in_tunisia}
+      # Compte applicatif dédié : l'application ne se connecte jamais en root.
+      MARIADB_USER: ${DB_USER:-busintunisia}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant (voir .env.example)}
+    volumes:
+      - db-data:/var/lib/mysql                                     # données persistantes
+      - ./deploy/db/init.sh:/docker-entrypoint-initdb.d/init.sh:ro # initialisation au 1er démarrage
+      - ./server/tests/fixtures:/fixtures:ro                       # schéma + jeu de données
+    networks: [backend]
+    # Pas de port publié : la base n'est joignable que depuis le réseau interne « backend ».
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    image: ${APP_IMAGE:-busintunisia}:${APP_TAG:-local}
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+        GIT_SHA: ${GIT_SHA:-unknown}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy # l'application attend que la base soit prête
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      PORT: 5000
+      DB_HOST: db # nom du service = nom DNS sur le réseau Docker
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-bus_in_tunisia}
+      DB_USER: ${DB_USER:-busintunisia}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant (voir .env.example)}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant (voir .env.example)}
+      ENABLE_DEMO_ACCOUNTS: ${ENABLE_DEMO_ACCOUNTS:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${APP_PORT:-8000}:5000"
+    networks: [backend, frontend]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" } # rotation des journaux
+
+volumes:
+  db-data:
+
+networks:
+  backend: # application ↔ base ; aucun accès depuis l'extérieur
+  frontend: # exposition du port de l'application

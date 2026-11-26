@@ -1,0 +1,22 @@
+# Contexte de construction Docker : uniquement ce dont l'image a besoin.
+# Moins de fichiers envoyés = build plus rapide, et aucun secret (.env) ne peut entrer dans une image.
+.git
+.github
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example
+docs
+scripts
+deploy
+**/coverage
+**/reports
+client/dist
+client/e2e
+client/e2e-report
+client/test-results
+client/playwright-report
+server/tests
+*.md
+Dockerfile
+docker-compose*.yml
