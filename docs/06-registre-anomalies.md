@@ -209,6 +209,7 @@ Ces anomalies ont été trouvées après la campagne de test, lors de la mise en
 | ID | Titre | Module | Sévérité | Prio. | Statut |
 |---|---|---|---|:-:|---|
 | ANO-19 | La variable `DB_PORT` est documentée mais ignorée : l'API se connecte toujours au port 3306 | Configuration | Majeure | P2 | ✅ Corrigée, vérifiée |
+| ANO-20 | Après la mise à jour de sécurité de `mysql2`, un administrateur reçoit 403 sur toutes les routes d'administration | Contrôle d'accès | **Critique** | P1 | ✅ Corrigée, vérifiée |
 
 ### ANO-19 — `DB_PORT` ignoré
 
@@ -220,3 +221,15 @@ Ces anomalies ont été trouvées après la campagne de test, lors de la mise en
 | Détection | Exécution de la régression contre une base MariaDB conteneurisée sur un port non standard (lot 4). Masquée en CI, où la base écoute justement sur 3306 |
 | Correctif | `port: Number(process.env.DB_PORT) \|\| 3306` dans la configuration du pool |
 | Vérification | Régression complète verte sur le port 3307 (100 tests Jest, collection API) |
+
+### ANO-20 — Administrateurs privés de leurs droits après la mise à jour de `mysql2`
+
+| Champ | Contenu |
+|---|---|
+| Reproduction | `npm audit fix` (lot 5 : correction des vulnérabilités) fait passer `mysql2` de 3.20.0 à 3.24.6 ; un administrateur appelle `POST /api/admin/buses` |
+| Attendu / obtenu | 200/400/409 selon la requête / **403 Admin access required** sur toutes les routes d'administration (4 tests d'intégration en échec, dont IT-26 à IT-28) |
+| Cause | mysql2 ≥ 3.24 décode les colonnes JSON de MariaDB : `user.roles` arrive sous forme de tableau `["ROLE_ADMIN"]` au lieu du texte `'["ROLE_ADMIN"]'`. `getClientRole` appliquait `JSON.parse` à un tableau, échouait et retombait sur « user » |
+| Détection | Suite de régression exécutée après la mise à jour des dépendances, avant tout commit |
+| Correctif | `getClientRole` accepte le texte JSON et le tableau décodé ; 7 tests unitaires ajoutés |
+| Vérification | Régression complète verte (115 tests Jest, collection API) |
+| Enseignement | Une mise à jour de sécurité est un changement comme un autre : elle passe par la branche, le pipeline et la suite de régression avant d'être fusionnée |

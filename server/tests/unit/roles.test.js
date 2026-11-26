@@ -19,6 +19,23 @@ describe('getClientRole', () => {
     expect(role).toBe(expected);
   });
 
+  // ANO-20 : depuis mysql2 3.24, la colonne JSON arrive déjà décodée (tableau) au lieu d'un texte.
+  test.each([
+    [['ROLE_ADMIN'], 'admin'],
+    [['ROLE_OPERATOR'], 'operator'],
+    [['ROLE_USER', 'ROLE_ADMIN'], 'admin'],
+    [[], 'user'],
+  ])('accepte aussi le tableau déjà décodé %p => "%s" (ANO-20)', (roles, expected) => {
+    expect(getClientRole(roles)).toBe(expected);
+  });
+
+  test.each([{ roles: ['ROLE_ADMIN'] }, '"ROLE_ADMIN"', 42])(
+    'retombe sur "user" quand la valeur décodée %p n\'est pas un tableau',
+    (roles) => {
+      expect(getClientRole(roles)).toBe('user');
+    }
+  );
+
   test.each([null, undefined, '', 'ROLE_ADMIN', '{not json'])(
     'retombe sur "user" (moindre privilège) quand la valeur %p n\'est pas un JSON valide',
     (roles) => {
