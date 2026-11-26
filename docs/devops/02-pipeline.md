@@ -17,15 +17,17 @@ Fichier : [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) (pipeline
 ## 2.2 Jobs et dépendances
 
 ```
-build ─────────────┐
-                   ├──► e2e
-backend (tests) ───┘
+            ┌──► build ─────────────┐
+quality ────┤                       ├──► e2e
+            └──► backend (tests) ───┘
 ```
 
-`build` et `backend` s'exécutent en parallèle ; `e2e`, le plus long, ne démarre que si les deux ont réussi.
+`quality` (lint, ~20 s) s'exécute d'abord : un échec arrête tout le pipeline (échec rapide).
+`build` et `backend` s'exécutent ensuite en parallèle ; `e2e`, le plus long, ne démarre que si les deux ont réussi.
 
 | Job | Rôle | Entrées | Sorties | Échec si… |
 |---|---|---|---|---|
+| **quality** — *Qualité (lint et analyse statique)* | ESLint du serveur et du client | Code source | Artefact `rapports-qualite` (JSON) | Une erreur ESLint ou plus de 5 avertissements (détail : [03-qualite-tests.md](03-qualite-tests.md)) |
 | **build** — *Build et artefact versionné* | Calcule la version, construit le client React, prépare le serveur sans dépendances de dev, assemble l'artefact | Code source, `package-lock.json` | Artefact `busintunisia-<version>-<sha>` (archive `.tar.gz`) ; sortie `version` | `npm ci` ou `vite build` échoue, ou l'archive est absente (`if-no-files-found: error`) |
 | **backend** — *Unitaires, intégration, couverture et API (régression)* | Tests Jest unitaires et d'intégration avec seuils de couverture, puis collection API Newman | Code serveur, service MariaDB jetable | Artefact `rapports-backend` (couverture HTML/LCOV, rapports Newman) | Un test échoue ou un seuil de couverture n'est pas atteint |
 | **e2e** — *Parcours d'interface (Playwright)* | Parcours utilisateur complets dans Chromium | Client + serveur, MariaDB jetable | Artefact `rapport-e2e` (rapport HTML, JUnit, captures) | Un scénario échoue |
