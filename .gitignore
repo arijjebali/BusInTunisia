@@ -13,6 +13,7 @@ client/playwright-report/
 
 # Rapports générés localement
 server/reports/
+reports/
 client/reports/
 # Secrets des environnements de déploiement (jamais versionnés)
 deploy/**/secrets.env
